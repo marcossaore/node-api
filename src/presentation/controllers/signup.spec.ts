@@ -3,6 +3,9 @@ import { MissingParamError } from '../errors/missing-param-error'
 import { InvalidParamError } from '../errors/invalid-param-error'
 import { EmailValidator } from '../protocols/email-validator'
 
+/**
+  SUT: system under test
+ */
 interface SutType {
   sut: SignupController
   emailValidatorStub: EmailValidator
@@ -25,7 +28,6 @@ const makeSut = (): SutType => {
 
 describe('Signup Controller', () => {
   test('should return 400 if no name is provided', () => {
-    //  system under test - SUT
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -40,7 +42,6 @@ describe('Signup Controller', () => {
   })
 
   test('should return 400 if no email is provided', () => {
-    //  system under test - SUT
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -55,7 +56,6 @@ describe('Signup Controller', () => {
   })
 
   test('should return 400 if no password is provided', () => {
-    //  system under test - SUT
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -70,7 +70,6 @@ describe('Signup Controller', () => {
   })
 
   test('should return 400 if no password confirmation is provided', () => {
-    //  system under test - SUT
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -85,7 +84,6 @@ describe('Signup Controller', () => {
   })
 
   test('should return 400 if an invalid email is provided', () => {
-    //  system under test - SUT
     const { sut, emailValidatorStub } = makeSut()
 
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
