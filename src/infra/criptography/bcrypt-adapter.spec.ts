@@ -28,8 +28,8 @@ describe('Bcrypt Adapter', () => {
 
   test('Should throw if bcrypt throws', async () => {
     const sut = makeSut()
-    const hash = await sut.encrypt('valid_password')
-    expect(hash).toBe('hash')
+    jest.spyOn(bcrypt, 'hash').mockReturnValueOnce(Promise.reject(new Error()))
+    const promise = sut.encrypt('valid_password')
+    await expect(promise).rejects.toThrow()
   })
-
 })
