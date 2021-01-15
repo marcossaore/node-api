@@ -1,5 +1,7 @@
+import { serverError } from '../../presentation/helpers/http-helpers'
 import { Controller, HttpRequest, HttpResponse } from '../../presentation/protocols'
 import { LogControllerDecorator } from './log'
+import { LogErrorRepository } from '../../data/protocols/log-error-repository'
 
 const makeController = (): Controller => {
   class ControlerStub implements Controller {
@@ -13,17 +15,30 @@ const makeController = (): Controller => {
   }
   return new ControlerStub()
 }
+
+const makeLogErrorRepository = (): LogErrorRepository => {
+  class LogErrorRepositoryStub implements LogErrorRepository {
+    async log (stack: string): Promise<void> {
+      await Promise.resolve(null)
+    }
+  }
+
+  return new LogErrorRepositoryStub()
+}
 interface SutTypes {
   controllerStub: Controller
   sut: LogControllerDecorator
+  logErrorRepository: LogErrorRepository
 }
 
 const makeSut = (): SutTypes => {
   const controllerStub = makeController()
-  const sut = new LogControllerDecorator(controllerStub)
+  const logErrorRepository = makeLogErrorRepository()
+  const sut = new LogControllerDecorator(controllerStub, logErrorRepository)
   return {
     controllerStub,
-    sut
+    sut,
+    logErrorRepository
   }
 }
 
@@ -49,15 +64,17 @@ describe('LogController Decorator', () => {
       statusCode: 200
     })
   })
+
+  test('Shoud call LogErrorRepository logError with correct error if controller returns a server error', async () => {
+    const { sut, logErrorRepository, controllerStub } = makeSut()
+    const fakeError = new Error()
+    fakeError.stack = 'stack_error'
+    jest.spyOn(controllerStub, 'handle').mockReturnValueOnce(Promise.resolve(serverError(fakeError)))
+    const logErrorSpy = jest.spyOn(logErrorRepository, 'log')
+    const httpRequest: HttpRequest = {
+      body: 'any_data'
+    }
+    await sut.handle(httpRequest)
+    expect(logErrorSpy).toHaveBeenCalledWith('stack_error')
+  })
 })
-
-/**
- * a - create a fakecontroller using a muck http-response
- * b - pass the fakecontroller as dependency injection to the LogControllerDecorator
- * c - create a fakeHttpRequest to pass as parameter to the handle method
- */
-
-/**
-  * 1 - spy handle method of fakecontroller and ensure that it invokes with the same parameter of fakeHttpRequest
-  * 2 - verify if handle method of LogControllerDecorator returns the same muck http-response
-  */
