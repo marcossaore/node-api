@@ -15,8 +15,7 @@ interface SutTypes {
   validationsStub: Validation[]
 }
 
-const makeSut = (): SutTypes => {
-  const validationsStub = [makeValidation()]
+const makeSut = (validationsStub: Validation[]): SutTypes => {
   const sut = new ValidationComposite(validationsStub)
 
   return {
@@ -27,7 +26,8 @@ const makeSut = (): SutTypes => {
 
 describe('Validation Composite', () => {
   test('should call Validation Inject with correct values', () => {
-    const { sut, validationsStub } = makeSut()
+    const validations = [makeValidation()]
+    const { sut, validationsStub } = makeSut(validations)
 
     const validationStub = validationsStub[0]
 
