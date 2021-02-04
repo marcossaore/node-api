@@ -10,28 +10,16 @@ const makeValidation = (): Validation => {
   return new ValidationStub()
 }
 
-interface SutTypes {
-  sut: ValidationComposite
-  validationsStub: Validation[]
-}
-
-const makeSut = (validationsStub: Validation[]): SutTypes => {
-  const sut = new ValidationComposite(validationsStub)
-
-  return {
-    sut,
-    validationsStub
-  }
+const makeSut = (validationsStub: Validation[]): Validation => {
+  return new ValidationComposite(validationsStub)
 }
 
 describe('Validation Composite', () => {
   test('should call Validation Inject with correct values', () => {
-    const validations = [makeValidation()]
-    const { sut, validationsStub } = makeSut(validations)
+    const validationsStub = [makeValidation()]
+    const sut = makeSut(validationsStub)
 
-    const validationStub = validationsStub[0]
-
-    const validateSpy = jest.spyOn(validationStub, 'validate')
+    const validateSpy = jest.spyOn(validationsStub[0], 'validate')
 
     const data = {
       key: 'key',
@@ -41,5 +29,22 @@ describe('Validation Composite', () => {
     sut.validate(data)
 
     expect(validateSpy).toHaveBeenCalledWith(data)
+  })
+
+  test('should return an error if an Validation throw', () => {
+    const validations = [makeValidation(), makeValidation()]
+    jest.spyOn(validations[0], 'validate').mockImplementationOnce(() => {
+      return new Error('Error in first validation')
+    })
+    const sut = makeSut(validations)
+
+    const data = {
+      key: 'key',
+      value: 'value'
+    }
+
+    const error = sut.validate(data)
+
+    expect(error).toEqual(new Error('Error in first validation'))
   })
 })
