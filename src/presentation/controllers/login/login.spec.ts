@@ -1,4 +1,4 @@
-import { badRequest } from '../../helpers/http-helpers'
+import { badRequest, serverError } from '../../helpers/http-helpers'
 import { Validation } from '../../validation/protocols/validation'
 import { LoginController } from './login'
 
@@ -52,5 +52,20 @@ describe('Login Controller', () => {
     }
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(badRequest(new Error('Validation Error')))
+  })
+
+  test('should throws when the Validation throws', async () => {
+    const { sut, validationStub } = makeSut()
+    jest.spyOn(validationStub, 'validate').mockImplementationOnce(() => {
+      throw new Error('Validation Error')
+    })
+    const httpRequest = {
+      body: {
+        password: 'any_password',
+        email: 'any_email@gmail.com'
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(serverError(Error('Validation Error')))
   })
 })
