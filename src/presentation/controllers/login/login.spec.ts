@@ -1,5 +1,5 @@
 import { Authentication } from '../../../domain/usecases/authetication'
-import { badRequest, serverError } from '../../helpers/http-helpers'
+import { badRequest, serverError, unauthorized } from '../../helpers/http-helpers'
 import { Validation } from '../../validation/protocols/validation'
 import { HttpRequest } from '../signup/signup-protocols'
 import { LoginController } from './login'
@@ -78,5 +78,12 @@ describe('Login Controller', () => {
     const authSpy = jest.spyOn(authenticationStub, 'auth')
     await sut.handle(makeFakeRequest())
     expect(authSpy).toHaveBeenCalledWith('any_email@gmail.com', 'any_password')
+  })
+
+  test('should return unauthorized if invalid credentials are provided', async () => {
+    const { sut, authenticationStub } = makeSut()
+    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(null)
+    const httpResponde = await sut.handle(makeFakeRequest())
+    expect(httpResponde).toEqual(unauthorized())
   })
 })
