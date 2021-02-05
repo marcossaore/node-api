@@ -1,5 +1,6 @@
 import { badRequest, serverError } from '../../helpers/http-helpers'
 import { Validation } from '../../validation/protocols/validation'
+import { HttpRequest } from '../signup/signup-protocols'
 import { LoginController } from './login'
 
 const makeValidation = (): Validation => {
@@ -25,18 +26,19 @@ const makeSut = (): SutTypes => {
   }
 }
 
+const makeFakeRequest = (): HttpRequest => ({
+  body: {
+    password: 'any_password',
+    email: 'any_email@gmail.com'
+  }
+})
+
 describe('Login Controller', () => {
   test('should call Validation with correct values', async () => {
     const { sut, validationStub } = makeSut()
     const validateSpy = jest.spyOn(validationStub, 'validate')
-    const httpRequest = {
-      body: {
-        password: 'any_password',
-        email: 'any_email@gmail.com'
-      }
-    }
-    await sut.handle(httpRequest)
-    expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
+    await sut.handle(makeFakeRequest())
+    expect(validateSpy).toHaveBeenCalledWith(makeFakeRequest().body)
   })
 
   test('should return a badRequest when the Validation fails', async () => {
@@ -44,13 +46,7 @@ describe('Login Controller', () => {
     jest.spyOn(validationStub, 'validate').mockImplementationOnce(() => {
       return new Error('Validation Error')
     })
-    const httpRequest = {
-      body: {
-        password: 'any_password',
-        email: 'any_email@gmail.com'
-      }
-    }
-    const httpResponse = await sut.handle(httpRequest)
+    const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(badRequest(new Error('Validation Error')))
   })
 
@@ -59,13 +55,7 @@ describe('Login Controller', () => {
     jest.spyOn(validationStub, 'validate').mockImplementationOnce(() => {
       throw new Error('Validation Error')
     })
-    const httpRequest = {
-      body: {
-        password: 'any_password',
-        email: 'any_email@gmail.com'
-      }
-    }
-    const httpResponse = await sut.handle(httpRequest)
+    const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(Error('Validation Error')))
   })
 })
