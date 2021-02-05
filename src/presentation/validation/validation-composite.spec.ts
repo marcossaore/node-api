@@ -31,7 +31,7 @@ describe('Validation Composite', () => {
     expect(validateSpy).toHaveBeenCalledWith(data)
   })
 
-  test('should return an error if an Validation throw', () => {
+  test('should return an error if an Validation returns an error', () => {
     const validations = [makeValidation(), makeValidation()]
     jest.spyOn(validations[0], 'validate').mockImplementationOnce(() => {
       return new Error('Error in first validation')
