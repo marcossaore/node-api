@@ -70,7 +70,7 @@ describe('Signup Controller', () => {
     expect(validateSpy).toHaveBeenCalledWith(data)
   })
 
-  test('should return an error when Validation fails', async () => {
+  test('should return a bad request with error provided from Validation fails', async () => {
     const { sut, validationStub } = makeSut()
     jest.spyOn(validationStub, 'validate').mockImplementationOnce(() => {
       return new Error('Validation Error')
