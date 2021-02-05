@@ -1,5 +1,5 @@
 import { Validation } from 'presentation/validation/protocols/validation'
-import { serverError } from '../../helpers/http-helpers'
+import { badRequest, serverError } from '../../helpers/http-helpers'
 import { Controller, HttpRequest, HttpResponse } from '../signup/signup-protocols'
 
 export class LoginController implements Controller {
@@ -11,7 +11,11 @@ export class LoginController implements Controller {
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      this.validation.validate(httpRequest.body)
+      const error = this.validation.validate(httpRequest.body)
+
+      if (error) {
+        return badRequest(error)
+      }
     } catch (error) {
       return serverError(error)
     }
