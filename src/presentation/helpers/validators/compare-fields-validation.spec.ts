@@ -1,5 +1,5 @@
 import { InvalidParamError } from '../../errors'
-import { CompareFieldValidation } from './compare-field-validation'
+import { CompareFieldsValidation } from './compare-fields-validation'
 
 describe('Compare Field Validation', () => {
   test('should return a InvalidParamError if comparable fields to be diferents', () => {
@@ -7,7 +7,7 @@ describe('Compare Field Validation', () => {
       pass: 'value',
       confpass: 'diferent_value'
     }
-    const sut = new CompareFieldValidation('pass', 'confpass')
+    const sut = new CompareFieldsValidation('pass', 'confpass')
     const error = sut.validate(data)
     expect(error).toEqual(new InvalidParamError('confpass'))
   })
@@ -17,7 +17,7 @@ describe('Compare Field Validation', () => {
       pass: 'value',
       confpass: 'value'
     }
-    const sut = new CompareFieldValidation('pass', 'confpass')
+    const sut = new CompareFieldsValidation('pass', 'confpass')
     const error = sut.validate(data)
     expect(error).toBeFalsy()
   })
