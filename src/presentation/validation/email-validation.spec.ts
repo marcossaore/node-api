@@ -34,4 +34,19 @@ describe('Email Validation', () => {
     const error = sut.validate(data)
     expect(error).toEqual(new InvalidParamError('email'))
   })
+
+  test('should not return when provided email to be correct', () => {
+    class EmailValidatorStub implements EmailValidator {
+      isValid (email: string): boolean {
+        return true
+      }
+    }
+    const emailValidatorStub = new EmailValidatorStub()
+    const sut = new EmailValidation('email', emailValidatorStub)
+    const data = {
+      email: 'valid@email.com'
+    }
+    const error = sut.validate(data)
+    expect(error).toBeFalsy()
+  })
 })
