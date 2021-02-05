@@ -1,12 +1,15 @@
 import { Validation } from 'presentation/validation/protocols/validation'
 import { badRequest, serverError } from '../../helpers/http-helpers'
 import { Controller, HttpRequest, HttpResponse } from '../signup/signup-protocols'
+import { Authentication } from '../../../domain/usecases/authetication'
 
 export class LoginController implements Controller {
   private readonly validation: Validation
+  private readonly authentication: Authentication
 
-  constructor (validation: Validation) {
+  constructor (validation: Validation, authentication: Authentication) {
     this.validation = validation
+    this.authentication = authentication
   }
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -16,6 +19,10 @@ export class LoginController implements Controller {
       if (error) {
         return badRequest(error)
       }
+
+      const { email, password } = httpRequest.body
+
+      await this.authentication.auth(email, password)
     } catch (error) {
       return serverError(error)
     }
