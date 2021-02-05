@@ -79,6 +79,15 @@ describe('Signup Controller', () => {
     expect(httpResponse).toEqual(badRequest(new Error('Validation Error')))
   })
 
+  test('should throws when Validation throws', async () => {
+    const { sut, validationStub } = makeSut()
+    jest.spyOn(validationStub, 'validate').mockImplementationOnce(() => {
+      throw new Error('Server Error')
+    })
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(serverError(Error('Server Error')))
+  })
+
   test('should call AddAccount with correct values', async () => {
     const { sut, addAccountStub } = makeSut()
     const addSpy = jest.spyOn(addAccountStub, 'add')
