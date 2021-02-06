@@ -1,21 +1,21 @@
 import { HttpRequest, HttpResponse, Controller, EmailValidator, AddAccount } from './signup-protocols'
 import { MissingParamError, InvalidParamError } from '../../errors'
 import { badRequest, serverError, ok } from '../../helpers/http-helpers'
-import { CountryValidator } from '../../../domain/usecases/country-validator'
+import { DocumentTypeValidator } from '../../../domain/usecases/document-type-validator'
 export class SignupController implements Controller {
   private readonly emailValidator: EmailValidator
   private readonly addAccount: AddAccount
-  private readonly countryValidator: CountryValidator
+  private readonly documentTypeValidator: DocumentTypeValidator
 
-  constructor (emaiValidator: EmailValidator, addAccount: AddAccount, countryValidator: CountryValidator) {
+  constructor (emaiValidator: EmailValidator, addAccount: AddAccount, documentTypeValidator: DocumentTypeValidator) {
     this.emailValidator = emaiValidator
     this.addAccount = addAccount
-    this.countryValidator = countryValidator
+    this.documentTypeValidator = documentTypeValidator
   }
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const requiredFields = ['name', 'email', 'password', 'passwordConfirmation', 'country', 'identification']
+      const requiredFields = ['name', 'email', 'password', 'passwordConfirmation', 'typeDocument', 'document']
 
       for (const field of requiredFields) {
         if (!httpRequest.body[field]) {
@@ -23,7 +23,7 @@ export class SignupController implements Controller {
         }
       }
 
-      const { name, email, password, passwordConfirmation, country } = httpRequest.body
+      const { name, email, password, passwordConfirmation, typeDocument } = httpRequest.body
 
       if (password !== passwordConfirmation) {
         return badRequest(new InvalidParamError('passwordConfirmation'))
@@ -35,7 +35,7 @@ export class SignupController implements Controller {
         return badRequest(new InvalidParamError('email'))
       }
 
-      this.countryValidator.hasValidation(country)
+      this.documentTypeValidator.hasValidation(typeDocument)
 
       const account = await this.addAccount.add({
         name,
