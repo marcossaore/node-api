@@ -36,11 +36,17 @@ const makeSut = (): SutTypes => {
 describe('DocumentType Validate', () => {
   test('should call DocumentValidatorFactory with correct value', () => {
     const { sut, documentValidatorFactoryStub } = makeSut()
-
     const makeSpy = jest.spyOn(documentValidatorFactoryStub, 'make')
-
     sut.hasValidation('any_validation')
-
     expect(makeSpy).toHaveBeenLastCalledWith('any_validation')
+  })
+
+  test('should return false when DocumentValidator fails', () => {
+    const { sut, documentValidatorFactoryStub } = makeSut()
+    const makeSpy = jest.spyOn(documentValidatorFactoryStub, 'make').mockImplementationOnce(() => {
+      return false
+    })
+    sut.hasValidation('any_validation')
+    expect(makeSpy).toReturnWith(false)
   })
 })
