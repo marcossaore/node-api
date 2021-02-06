@@ -8,7 +8,7 @@ import { EmailValidatorAdapter } from '../../utils/email-validator-adapter'
 import { Controller } from '../../presentation/protocols'
 import { LogControllerDecorator } from '../decorators/log'
 import { DocumentTypeValidate } from '../../presentation/helpers/validators/document-type-validate'
-import { DocumentValidatorFactory } from 'presentation/helpers/validators/document-validator-factory'
+import { DocumentValidatorFactory } from '../../presentation/helpers/validators/document-validator-factory'
 
 export const makeSignupController = (): Controller => {
   const salt = 12
