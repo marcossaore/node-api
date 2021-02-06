@@ -1,7 +1,8 @@
 import { DocumentValidator } from '../protocols/document-validator'
+import { cpf } from 'cpf-cnpj-validator'
 
-export class CPF implements DocumentValidator {
+export class CPFValidator implements DocumentValidator {
   validate (document: string): boolean {
-    return true
+    return cpf.isValid(document)
   }
 }
