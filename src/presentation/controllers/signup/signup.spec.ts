@@ -3,8 +3,8 @@ import { MissingParamError, InvalidParamError, ServerError } from '../../errors'
 import { AddAccount, AddAccountModel, AccountModel, EmailValidator } from './signup-protocols'
 import { HttpRequest } from 'presentation/protocols'
 import { ok, badRequest, serverError } from '../../helpers/http-helpers'
-import { DocumentValidator } from '../../../domain/usecases/document-validator'
-import { DocumentTypeValidator } from 'domain/usecases/document-type-validator'
+import { DocumentValidator } from '../../helpers/validators/protocols/document-validator'
+import { DocumentTypeValidator } from '../../helpers/validators/protocols/document-type-validator'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
