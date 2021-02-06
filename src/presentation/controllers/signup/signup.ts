@@ -13,7 +13,7 @@ export class SignupController implements Controller {
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const requiredFields = ['name', 'email', 'password', 'passwordConfirmation']
+      const requiredFields = ['name', 'email', 'password', 'passwordConfirmation', 'country', 'identification']
 
       for (const field of requiredFields) {
         if (!httpRequest.body[field]) {
