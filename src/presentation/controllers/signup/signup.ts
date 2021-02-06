@@ -35,10 +35,13 @@ export class SignupController implements Controller {
         return badRequest(new InvalidParamError('email'))
       }
 
-      const validation = this.documentTypeValidator.hasValidation(typeDocument)
+      const documentValidation = this.documentTypeValidator.hasValidation(typeDocument)
 
-      if (validation) {
-        validation.validate(document)
+      if (documentValidation) {
+        const isDocumentValid = documentValidation.validate(document)
+        if (!isDocumentValid) {
+          return badRequest(new InvalidParamError('document'))
+        }
       }
 
       const account = await this.addAccount.add({
