@@ -267,6 +267,13 @@ describe('Signup Controller', () => {
     expect(hasValidationSpy).toHaveBeenCalledWith('any_type_document')
   })
 
+  test('should return null for a DocumentValidator when DocumentTypeValidator no has a validation to apply', async () => {
+    const { sut, documentTypeValidatorStub } = makeSut()
+    const hasValidationSpy = jest.spyOn(documentTypeValidatorStub, 'hasValidation').mockReturnValueOnce(null)
+    await sut.handle(makeFakeRequest())
+    expect(hasValidationSpy).toHaveReturnedWith(null)
+  })
+
   test('should call DocumentValidator if DocumentTypeValidator returns a validation to apply', async () => {
     const { sut, documentValidatorStub } = makeSut()
     const applySpy = jest.spyOn(documentValidatorStub, 'apply')
