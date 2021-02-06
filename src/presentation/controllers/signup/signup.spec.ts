@@ -3,6 +3,7 @@ import { MissingParamError, InvalidParamError, ServerError } from '../../errors'
 import { AddAccount, AddAccountModel, AccountModel, EmailValidator } from './signup-protocols'
 import { HttpRequest } from 'presentation/protocols'
 import { ok, badRequest, serverError } from '../../helpers/http-helpers'
+import { CountryValidator } from '../../../domain/usecases/country-validator'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -10,7 +11,7 @@ const makeFakeRequest = (): HttpRequest => ({
     name: 'any_name',
     password: 'any_password',
     passwordConfirmation: 'any_password',
-    country: 'any_county',
+    country: 'any_country',
     identification: 'any_identification'
   }
 })
@@ -41,10 +42,21 @@ const makeEmailValidator = (): EmailValidator => {
 
   return new EmailValidatorStub()
 }
+
+const makeCountryValidator = (): CountryValidator => {
+  class CountryValidatorStub implements CountryValidator {
+    hasValidation (country: string): boolean {
+      return true
+    }
+  }
+
+  return new CountryValidatorStub()
+}
 interface SutType {
   sut: SignupController
   emailValidatorStub: EmailValidator
   addAccountStub: AddAccount
+  countryValidatorStub: CountryValidator
 }
 
 /**
@@ -53,12 +65,14 @@ interface SutType {
 const makeSut = (): SutType => {
   const emailValidatorStub = makeEmailValidator()
   const addAccountStub = makeAddAccount()
-  const sut = new SignupController(emailValidatorStub, addAccountStub)
+  const countryValidatorStub = makeCountryValidator()
+  const sut = new SignupController(emailValidatorStub, addAccountStub, countryValidatorStub)
 
   return {
     sut,
     emailValidatorStub,
-    addAccountStub
+    addAccountStub,
+    countryValidatorStub
   }
 }
 
@@ -228,5 +242,12 @@ describe('Signup Controller', () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(ok(makeFakeAccount()))
+  })
+
+  test('should call CountryValidator with correct country', async () => {
+    const { sut, countryValidatorStub } = makeSut()
+    const isValidSpy = jest.spyOn(countryValidatorStub, 'hasValidation')
+    await sut.handle(makeFakeRequest())
+    expect(isValidSpy).toHaveBeenCalledWith('any_country')
   })
 })
