@@ -50,7 +50,7 @@ describe('DocumentType Validate', () => {
     expect(makeSpy).toReturnWith(false)
   })
 
-  test('should not return when the validation succeeds', () => {
+  test('should not return when if does not exist validation', () => {
     const { sut, documentValidatorFactoryStub } = makeSut()
     const makeSpy = jest.spyOn(documentValidatorFactoryStub, 'make').mockImplementationOnce(() => {
       return null
