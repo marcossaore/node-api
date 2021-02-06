@@ -23,7 +23,7 @@ export class SignupController implements Controller {
         }
       }
 
-      const { name, email, password, passwordConfirmation, typeDocument } = httpRequest.body
+      const { name, email, password, passwordConfirmation, typeDocument, document } = httpRequest.body
 
       if (password !== passwordConfirmation) {
         return badRequest(new InvalidParamError('passwordConfirmation'))
@@ -35,7 +35,11 @@ export class SignupController implements Controller {
         return badRequest(new InvalidParamError('email'))
       }
 
-      this.documentTypeValidator.hasValidation(typeDocument)
+      const validation = this.documentTypeValidator.hasValidation(typeDocument)
+
+      if (validation) {
+        validation.apply(document)
+      }
 
       const account = await this.addAccount.add({
         name,
