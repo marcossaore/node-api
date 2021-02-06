@@ -46,7 +46,7 @@ const makeEmailValidator = (): EmailValidator => {
 
 const makeDocumentValidator = (): DocumentValidator => {
   class DocumentValidatorStub implements DocumentValidator {
-    apply (document: string): boolean {
+    validate (document: string): boolean {
       return true
     }
   }
@@ -277,16 +277,16 @@ describe('Signup Controller', () => {
   test('should return null for a DocumentValidator when DocumentTypeValidator no has a validation to apply', async () => {
     const { sut, documentTypeValidatorStub, documentValidatorStub } = makeSut()
     const hasValidationSpy = jest.spyOn(documentTypeValidatorStub, 'hasValidation').mockReturnValueOnce(null)
-    const applySpy = jest.spyOn(documentValidatorStub, 'apply')
+    const validateSpy = jest.spyOn(documentValidatorStub, 'validate')
     await sut.handle(makeFakeRequest())
     expect(hasValidationSpy).toHaveReturnedWith(null)
-    expect(applySpy).toReturnTimes(0)
+    expect(validateSpy).toReturnTimes(0)
   })
 
   test('should call DocumentValidator if DocumentTypeValidator returns a validation to apply', async () => {
     const { sut, documentValidatorStub } = makeSut()
-    const applySpy = jest.spyOn(documentValidatorStub, 'apply')
+    const validateSpy = jest.spyOn(documentValidatorStub, 'validate')
     await sut.handle(makeFakeRequest())
-    expect(applySpy).toHaveBeenCalledWith('any_document')
+    expect(validateSpy).toHaveBeenCalledWith('any_document')
   })
 })

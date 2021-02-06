@@ -1,3 +1,3 @@
 export interface DocumentValidator {
-  apply: (document: string) => boolean
+  validate: (document: string) => boolean
 }

@@ -38,7 +38,7 @@ export class SignupController implements Controller {
       const validation = this.documentTypeValidator.hasValidation(typeDocument)
 
       if (validation) {
-        validation.apply(document)
+        validation.validate(document)
       }
 
       const account = await this.addAccount.add({
