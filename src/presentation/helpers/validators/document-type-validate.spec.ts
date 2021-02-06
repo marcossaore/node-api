@@ -49,4 +49,13 @@ describe('DocumentType Validate', () => {
     sut.hasValidation('any_validation')
     expect(makeSpy).toReturnWith(false)
   })
+
+  test('should not return when the validation succeeds', () => {
+    const { sut, documentValidatorFactoryStub } = makeSut()
+    const makeSpy = jest.spyOn(documentValidatorFactoryStub, 'make').mockImplementationOnce(() => {
+      return null
+    })
+    sut.hasValidation('any_validation')
+    expect(makeSpy).toReturnWith(null)
+  })
 })
