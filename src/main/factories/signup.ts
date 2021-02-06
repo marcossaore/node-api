@@ -7,6 +7,8 @@ import { SignupController } from '../../presentation/controllers/signup/signup'
 import { EmailValidatorAdapter } from '../../utils/email-validator-adapter'
 import { Controller } from '../../presentation/protocols'
 import { LogControllerDecorator } from '../decorators/log'
+import { DocumentTypeValidate } from '../../presentation/helpers/validators/document-type-validate'
+import { DocumentValidatorFactory } from 'presentation/helpers/validators/document-validator-factory'
 
 export const makeSignupController = (): Controller => {
   const salt = 12
@@ -14,7 +16,9 @@ export const makeSignupController = (): Controller => {
   const bcryptAdapter = new BcryptAdapter(salt)
   const accountMongoRepository = new AccountMongoRepository()
   const dbAddAccount = new DbAddAccount(bcryptAdapter, accountMongoRepository)
-  const signupController = new SignupController(emailValidatorAdapter, dbAddAccount)
+  const documentValidatorFactory = DocumentValidatorFactory
+  const documentTypeValidate = new DocumentTypeValidate(documentValidatorFactory)
+  const signupController = new SignupController(emailValidatorAdapter, dbAddAccount, documentTypeValidate)
   const logMongoRepository = new LogMongoRepository()
   return new LogControllerDecorator(signupController, logMongoRepository)
 }
