@@ -1,14 +1,16 @@
 import { HttpRequest, HttpResponse, Controller, EmailValidator, AddAccount } from './signup-protocols'
 import { MissingParamError, InvalidParamError } from '../../errors'
 import { badRequest, serverError, ok } from '../../helpers/http-helpers'
-
+import { CountryValidator } from '../../../domain/usecases/country-validator'
 export class SignupController implements Controller {
   private readonly emailValidator: EmailValidator
   private readonly addAccount: AddAccount
+  private readonly countryValidator: CountryValidator
 
-  constructor (emaiValidator: EmailValidator, addAccount: AddAccount) {
+  constructor (emaiValidator: EmailValidator, addAccount: AddAccount, countryValidator: CountryValidator) {
     this.emailValidator = emaiValidator
     this.addAccount = addAccount
+    this.countryValidator = countryValidator
   }
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -21,7 +23,7 @@ export class SignupController implements Controller {
         }
       }
 
-      const { name, email, password, passwordConfirmation } = httpRequest.body
+      const { name, email, password, passwordConfirmation, country } = httpRequest.body
 
       if (password !== passwordConfirmation) {
         return badRequest(new InvalidParamError('passwordConfirmation'))
@@ -32,6 +34,8 @@ export class SignupController implements Controller {
       if (!isValid) {
         return badRequest(new InvalidParamError('email'))
       }
+
+      this.countryValidator.hasValidation(country)
 
       const account = await this.addAccount.add({
         name,
