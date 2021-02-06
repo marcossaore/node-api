@@ -9,7 +9,9 @@ const makeFakeRequest = (): HttpRequest => ({
     email: 'any_email@mail.com',
     name: 'any_name',
     password: 'any_password',
-    passwordConfirmation: 'any_password'
+    passwordConfirmation: 'any_password',
+    country: 'any_county',
+    identification: 'any_identification'
   }
 })
 
@@ -80,7 +82,9 @@ describe('Signup Controller', () => {
       body: {
         name: 'any_name',
         password: 'any_password',
-        passwordConfirmation: 'any_password'
+        passwordConfirmation: 'any_password',
+        country: 'any_country',
+        identification: 'any_identification'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
@@ -93,7 +97,9 @@ describe('Signup Controller', () => {
       body: {
         email: 'any_email@mail.com',
         name: 'any_name',
-        passwordConfirmation: 'any_password'
+        passwordConfirmation: 'any_password',
+        country: 'any_country',
+        identification: 'any_identification'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
@@ -106,7 +112,9 @@ describe('Signup Controller', () => {
       body: {
         email: 'any_email@mail.com',
         name: 'any_name',
-        password: 'any_password'
+        password: 'any_password',
+        country: 'any_country',
+        identification: 'any_identification'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
@@ -123,7 +131,9 @@ describe('Signup Controller', () => {
         email: 'invalid_email@mail.com',
         name: 'any_name',
         password: 'any_password',
-        passwordConfirmation: 'any_password'
+        passwordConfirmation: 'any_password',
+        country: 'any_country',
+        identification: 'any_identification'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
@@ -138,12 +148,44 @@ describe('Signup Controller', () => {
         email: 'any_email@mail.com',
         name: 'any_name',
         password: 'password',
-        passwordConfirmation: 'invalid_password'
+        passwordConfirmation: 'invalid_password',
+        country: 'any_country',
+        identification: 'any_identification'
       }
     }
 
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(badRequest(new InvalidParamError('passwordConfirmation')))
+  })
+
+  test('should return 400 if no country is provided', async () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      body: {
+        email: 'any_email@mail.com',
+        name: 'any_name',
+        password: 'any_password',
+        passwordConfirmation: 'invalid_password',
+        identification: 'any_identification'
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('country')))
+  })
+
+  test('should return 400 if no identification is provided', async () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      body: {
+        email: 'any_email@mail.com',
+        name: 'any_name',
+        password: 'any_password',
+        passwordConfirmation: 'invalid_password',
+        country: 'any_county'
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('identification')))
   })
 
   test('should call EmailValidator with correct email', async () => {
