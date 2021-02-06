@@ -289,4 +289,11 @@ describe('Signup Controller', () => {
     await sut.handle(makeFakeRequest())
     expect(validateSpy).toHaveBeenCalledWith('any_document')
   })
+
+  test('should returns a bad request if invalid document is provided', async () => {
+    const { sut, documentValidatorStub } = makeSut()
+    jest.spyOn(documentValidatorStub, 'validate').mockReturnValueOnce(false)
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(badRequest(new InvalidParamError('document')))
+  })
 })
