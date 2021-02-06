@@ -3,7 +3,8 @@ import { MissingParamError, InvalidParamError, ServerError } from '../../errors'
 import { AddAccount, AddAccountModel, AccountModel, EmailValidator } from './signup-protocols'
 import { HttpRequest } from 'presentation/protocols'
 import { ok, badRequest, serverError } from '../../helpers/http-helpers'
-import { CountryValidator } from '../../../domain/usecases/country-validator'
+import { DocumentValidator } from '../../../domain/usecases/document-validator'
+import { DocumentTypeValidator } from 'domain/usecases/document-type-validator'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -11,8 +12,8 @@ const makeFakeRequest = (): HttpRequest => ({
     name: 'any_name',
     password: 'any_password',
     passwordConfirmation: 'any_password',
-    country: 'any_country',
-    identification: 'any_identification'
+    typeDocument: 'any_type_document',
+    document: 'any_document'
   }
 })
 
@@ -43,20 +44,31 @@ const makeEmailValidator = (): EmailValidator => {
   return new EmailValidatorStub()
 }
 
-const makeCountryValidator = (): CountryValidator => {
-  class CountryValidatorStub implements CountryValidator {
-    hasValidation (country: string): boolean {
+const makeDocumentValidator = (): DocumentValidator => {
+  class DocumentValidatorStub implements DocumentValidator {
+    apply (document: string): boolean {
       return true
     }
   }
 
-  return new CountryValidatorStub()
+  return new DocumentValidatorStub()
+}
+
+const makeDocumentTypeValidator = (documentValidator: DocumentValidator): DocumentTypeValidator => {
+  class DocumentTypeValidatorStub implements DocumentTypeValidator {
+    hasValidation (tyoe: string): DocumentValidator {
+      return documentValidator
+    }
+  }
+
+  return new DocumentTypeValidatorStub()
 }
 interface SutType {
   sut: SignupController
   emailValidatorStub: EmailValidator
   addAccountStub: AddAccount
-  countryValidatorStub: CountryValidator
+  documentValidatorStub: DocumentValidator
+  documentTypeValidatorStub: DocumentTypeValidator
 }
 
 /**
@@ -65,14 +77,16 @@ interface SutType {
 const makeSut = (): SutType => {
   const emailValidatorStub = makeEmailValidator()
   const addAccountStub = makeAddAccount()
-  const countryValidatorStub = makeCountryValidator()
-  const sut = new SignupController(emailValidatorStub, addAccountStub, countryValidatorStub)
+  const documentValidatorStub = makeDocumentValidator()
+  const documentTypeValidatorStub = makeDocumentTypeValidator(documentValidatorStub)
+  const sut = new SignupController(emailValidatorStub, addAccountStub, documentTypeValidatorStub)
 
   return {
     sut,
     emailValidatorStub,
     addAccountStub,
-    countryValidatorStub
+    documentValidatorStub,
+    documentTypeValidatorStub
   }
 }
 
@@ -83,7 +97,9 @@ describe('Signup Controller', () => {
       body: {
         email: 'any_email@mail.com',
         password: 'any_password',
-        passwordConfirmation: 'any_password'
+        passwordConfirmation: 'any_password',
+        typeDocument: 'any_type_document',
+        document: 'any_document'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
@@ -97,8 +113,8 @@ describe('Signup Controller', () => {
         name: 'any_name',
         password: 'any_password',
         passwordConfirmation: 'any_password',
-        country: 'any_country',
-        identification: 'any_identification'
+        typeDocument: 'any_type_document',
+        document: 'any_document'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
@@ -112,8 +128,8 @@ describe('Signup Controller', () => {
         email: 'any_email@mail.com',
         name: 'any_name',
         passwordConfirmation: 'any_password',
-        country: 'any_country',
-        identification: 'any_identification'
+        typeDocument: 'any_type_document',
+        document: 'any_document'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
@@ -127,8 +143,8 @@ describe('Signup Controller', () => {
         email: 'any_email@mail.com',
         name: 'any_name',
         password: 'any_password',
-        country: 'any_country',
-        identification: 'any_identification'
+        typeDocument: 'any_type_document',
+        document: 'any_document'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
@@ -146,8 +162,8 @@ describe('Signup Controller', () => {
         name: 'any_name',
         password: 'any_password',
         passwordConfirmation: 'any_password',
-        country: 'any_country',
-        identification: 'any_identification'
+        typeDocument: 'any_type_document',
+        document: 'any_document'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
@@ -163,8 +179,8 @@ describe('Signup Controller', () => {
         name: 'any_name',
         password: 'password',
         passwordConfirmation: 'invalid_password',
-        country: 'any_country',
-        identification: 'any_identification'
+        typeDocument: 'any_type_document',
+        document: 'any_document'
       }
     }
 
@@ -172,7 +188,7 @@ describe('Signup Controller', () => {
     expect(httpResponse).toEqual(badRequest(new InvalidParamError('passwordConfirmation')))
   })
 
-  test('should return 400 if no country is provided', async () => {
+  test('should return 400 if no type document is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -180,14 +196,14 @@ describe('Signup Controller', () => {
         name: 'any_name',
         password: 'any_password',
         passwordConfirmation: 'invalid_password',
-        identification: 'any_identification'
+        document: 'any_document'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual(badRequest(new MissingParamError('country')))
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('typeDocument')))
   })
 
-  test('should return 400 if no identification is provided', async () => {
+  test('should return 400 if no document is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -195,11 +211,11 @@ describe('Signup Controller', () => {
         name: 'any_name',
         password: 'any_password',
         passwordConfirmation: 'invalid_password',
-        country: 'any_county'
+        typeDocument: 'any_type'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual(badRequest(new MissingParamError('identification')))
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('document')))
   })
 
   test('should call EmailValidator with correct email', async () => {
@@ -244,10 +260,10 @@ describe('Signup Controller', () => {
     expect(httpResponse).toEqual(ok(makeFakeAccount()))
   })
 
-  test('should call CountryValidator with correct country', async () => {
-    const { sut, countryValidatorStub } = makeSut()
-    const isValidSpy = jest.spyOn(countryValidatorStub, 'hasValidation')
+  test('should call DocumentTypeValidator with correct document type', async () => {
+    const { sut, documentTypeValidatorStub } = makeSut()
+    const isValidSpy = jest.spyOn(documentTypeValidatorStub, 'hasValidation')
     await sut.handle(makeFakeRequest())
-    expect(isValidSpy).toHaveBeenCalledWith('any_country')
+    expect(isValidSpy).toHaveBeenCalledWith('any_type_document')
   })
 })
