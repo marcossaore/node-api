@@ -4,6 +4,7 @@ import { AddAccount, AddAccountModel, AccountModel } from './signup-protocols'
 import { HttpRequest } from '../../protocols'
 import { badRequest, ok, serverError } from '../../helpers/http/http-helpers'
 import { Validation } from '../../protocols/validation'
+import { VerifyExistedAccount } from '../../../data/protocols/db/verify-existed-account'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -40,10 +41,21 @@ const makeValidation = (): Validation => {
 
   return new ValidationStun()
 }
+
+const makeVerifyExistedAccount = (): VerifyExistedAccount => {
+  class VerifyExistedAccountStub implements VerifyExistedAccount {
+    async verify (email: string): Promise<boolean> {
+      return false
+    }
+  }
+
+  return new VerifyExistedAccountStub()
+}
 interface SutType {
   sut: SignupController
   validationStub: Validation
   addAccountStub: AddAccount
+  verifyExistedAccountStub: VerifyExistedAccount
 }
 
 /**
@@ -52,12 +64,14 @@ interface SutType {
 const makeSut = (): SutType => {
   const validationStub = makeValidation()
   const addAccountStub = makeAddAccount()
-  const sut = new SignupController(validationStub, addAccountStub)
+  const verifyExistedAccountStub = makeVerifyExistedAccount()
+  const sut = new SignupController(validationStub, addAccountStub, verifyExistedAccountStub)
 
   return {
     sut,
     validationStub,
-    addAccountStub
+    addAccountStub,
+    verifyExistedAccountStub
   }
 }
 
@@ -112,5 +126,12 @@ describe('Signup Controller', () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(ok(makeFakeAccount()))
+  })
+
+  test('should call VerifyExistedAccount with correct email', async () => {
+    const { sut, verifyExistedAccountStub } = makeSut()
+    const SpyVerify = jest.spyOn(verifyExistedAccountStub, 'verify')
+    await sut.handle(makeFakeRequest())
+    expect(SpyVerify).toHaveBeenCalledWith('any_email@mail.com')
   })
 })
