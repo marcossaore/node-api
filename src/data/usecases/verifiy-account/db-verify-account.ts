@@ -10,9 +10,6 @@ export class DbVerifyAccount implements VerifyExistedAccount {
 
   async verify (email: string): Promise<boolean> {
     const accountExists = await this.verifyExistedAccountRepository.verify(email)
-    if (accountExists) {
-      return true
-    }
-    return false
+    return !!accountExists
   }
 }
