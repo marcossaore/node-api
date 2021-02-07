@@ -40,10 +40,17 @@ describe('DbVerifyAccount UseCase', () => {
     expect(verifySpy).toHaveBeenCalledWith('any_email')
   })
 
-  test('should returns true if account exists', async () => {
+  test('should return true if account exists', async () => {
     const { sut, dbVerifyAccountRepositoryStub } = makeSut()
     jest.spyOn(dbVerifyAccountRepositoryStub, 'verify').mockReturnValueOnce(Promise.resolve(makeFakeAccount()))
     const accountExists = await sut.verify('any_email')
     expect(accountExists).toBe(true)
+  })
+
+  test('should throw if VerifyExistedAccountRepository throws', async () => {
+    const { sut, dbVerifyAccountRepositoryStub } = makeSut()
+    jest.spyOn(dbVerifyAccountRepositoryStub, 'verify').mockReturnValueOnce(Promise.reject(new Error()))
+    const promise = sut.verify('any_email')
+    await expect(promise).rejects.toThrow()
   })
 })
