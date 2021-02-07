@@ -53,4 +53,10 @@ describe('DbVerifyAccount UseCase', () => {
     const promise = sut.verify('any_email')
     await expect(promise).rejects.toThrow()
   })
+
+  test('should return false if not exists an account', async () => {
+    const { sut } = makeSut()
+    const accountExists = await sut.verify('any_email')
+    expect(accountExists).toBe(false)
+  })
 })
