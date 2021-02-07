@@ -4,7 +4,7 @@ import { AddAccount, AddAccountModel, AccountModel } from './signup-protocols'
 import { HttpRequest } from '../../protocols'
 import { badRequest, conflict, ok, serverError } from '../../helpers/http/http-helpers'
 import { Validation } from '../../protocols/validation'
-import { VerifyExistedAccount } from '../../../data/protocols/db/verify-existed-account'
+import { VerifyExistedAccount } from '../../../domain/usecases/verify-existed-account'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {

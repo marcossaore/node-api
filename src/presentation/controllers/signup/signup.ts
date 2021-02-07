@@ -1,7 +1,7 @@
 import { HttpRequest, HttpResponse, Controller, AddAccount } from './signup-protocols'
 import { serverError, ok, badRequest, conflict } from '../../helpers/http/http-helpers'
 import { Validation } from '../../protocols/validation'
-import { VerifyExistedAccount } from '../../../data/protocols/db/verify-existed-account'
+import { VerifyExistedAccount } from '../../../domain/usecases/verify-existed-account'
 
 export class SignupController implements Controller {
   private readonly validation: Validation
