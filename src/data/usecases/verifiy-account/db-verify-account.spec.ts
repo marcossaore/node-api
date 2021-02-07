@@ -12,7 +12,7 @@ const makeFakeAccount = (): AccountModel => ({
 const makeVerifyExistedAccountRepository = (): VerifyExistedAccountRepository => {
   class DbVerifyAccountRepositoryStub implements VerifyExistedAccountRepository {
     async verify (email: string): Promise<AccountModel> {
-      return makeFakeAccount()
+      return null
     }
   }
   return new DbVerifyAccountRepositoryStub()
@@ -38,5 +38,12 @@ describe('DbVerifyAccount UseCase', () => {
     const verifySpy = jest.spyOn(dbVerifyAccountRepositoryStub, 'verify')
     await sut.verify('any_email')
     expect(verifySpy).toHaveBeenCalledWith('any_email')
+  })
+
+  test('should returns true if account exists', async () => {
+    const { sut, dbVerifyAccountRepositoryStub } = makeSut()
+    jest.spyOn(dbVerifyAccountRepositoryStub, 'verify').mockReturnValueOnce(Promise.resolve(makeFakeAccount()))
+    const accountExists = await sut.verify('any_email')
+    expect(accountExists).toBe(true)
   })
 })
