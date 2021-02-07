@@ -1,5 +1,5 @@
 import { HttpRequest, HttpResponse, Controller, AddAccount } from './signup-protocols'
-import { serverError, ok, badRequest } from '../../helpers/http/http-helpers'
+import { serverError, ok, badRequest, conflict } from '../../helpers/http/http-helpers'
 import { Validation } from '../../protocols/validation'
 import { VerifyExistedAccount } from '../../../data/protocols/db/verify-existed-account'
 
@@ -24,7 +24,11 @@ export class SignupController implements Controller {
 
       const { name, email, password } = httpRequest.body
 
-      await this.verifyExistedAccount.verify(email)
+      const alreadyExistsEmail = await this.verifyExistedAccount.verify(email)
+
+      if (alreadyExistsEmail) {
+        return conflict('account already exists!')
+      }
 
       const account = await this.addAccount.add({
         name,
