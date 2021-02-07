@@ -2,7 +2,7 @@ import { SignupController } from './signup'
 import { ServerError } from '../../errors'
 import { AddAccount, AddAccountModel, AccountModel } from './signup-protocols'
 import { HttpRequest } from '../../protocols'
-import { badRequest, ok, serverError } from '../../helpers/http/http-helpers'
+import { badRequest, conflict, ok, serverError } from '../../helpers/http/http-helpers'
 import { Validation } from '../../protocols/validation'
 import { VerifyExistedAccount } from '../../../data/protocols/db/verify-existed-account'
 
@@ -122,16 +122,23 @@ describe('Signup Controller', () => {
     expect(httpResponse).toEqual(serverError(new ServerError(null)))
   })
 
-  test('should return 200 if valid data is provided', async () => {
-    const { sut } = makeSut()
-    const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(ok(makeFakeAccount()))
-  })
-
   test('should call VerifyExistedAccount with correct email', async () => {
     const { sut, verifyExistedAccountStub } = makeSut()
     const SpyVerify = jest.spyOn(verifyExistedAccountStub, 'verify')
     await sut.handle(makeFakeRequest())
     expect(SpyVerify).toHaveBeenCalledWith('any_email@mail.com')
+  })
+
+  test('should return an conflict if an email existed is provided', async () => {
+    const { sut, verifyExistedAccountStub } = makeSut()
+    jest.spyOn(verifyExistedAccountStub, 'verify').mockReturnValueOnce(Promise.resolve(true))
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(conflict('account already exists!'))
+  })
+
+  test('should return 200 if valid data is provided', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(ok(makeFakeAccount()))
   })
 })
