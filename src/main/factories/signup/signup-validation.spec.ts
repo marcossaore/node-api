@@ -1,9 +1,6 @@
 import { makeSignupValidation } from './signup-validation'
-import { ValidationComposite } from '../../../presentation/helpers/validators/validation-composite'
+import { CompareFieldsValidation, EmailValidation, RequiredFieldValidation, ValidationComposite } from '../../../presentation/helpers/validators/'
 import { Validation } from '../../../presentation/controllers/login/login-protocols'
-import { RequiredFieldValidation } from '../../../presentation/helpers/validators/required-field-validation'
-import { CompareFieldsValidation } from '../../../presentation/helpers/validators/compare-fields-validation'
-import { EmailValidation } from '../../../presentation/helpers/validators/email-validation'
 import { EmailValidatorAdapter } from '../../../utils/email-validator-adapter'
 /**
  * Como o código está dentro do Main Layer e não está sendo feito injeção de dependência através do construtor
