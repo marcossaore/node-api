@@ -33,13 +33,13 @@ const makeAddAccount = (): AddAccount => {
 }
 
 const makeValidation = (): Validation => {
-  class ValidationStun implements Validation {
+  class ValidationStub implements Validation {
     validate (params: any): Error {
       return null
     }
   }
 
-  return new ValidationStun()
+  return new ValidationStub()
 }
 
 const makeVerifyExistedAccount = (): VerifyExistedAccount => {

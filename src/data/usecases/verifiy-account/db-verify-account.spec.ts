@@ -1,17 +1,9 @@
 import { VerifyExistedAccountRepository } from '../../protocols/db/verify-existed-account-repository'
-import { AccountModel } from '../add-account/db-add-account-protocols'
 import { DbVerifyAccount } from './db-verify-account'
-
-const makeFakeAccount = (): AccountModel => ({
-  id: 'any_id',
-  name: 'any_name',
-  email: 'any_email',
-  password: 'any_password'
-})
 
 const makeVerifyExistedAccountRepository = (): VerifyExistedAccountRepository => {
   class DbVerifyAccountRepositoryStub implements VerifyExistedAccountRepository {
-    async verify (email: string): Promise<AccountModel> {
+    async verify (email: string): Promise<boolean> {
       return null
     }
   }
@@ -42,7 +34,7 @@ describe('DbVerifyAccount UseCase', () => {
 
   test('should return true if account exists', async () => {
     const { sut, dbVerifyAccountRepositoryStub } = makeSut()
-    jest.spyOn(dbVerifyAccountRepositoryStub, 'verify').mockReturnValueOnce(Promise.resolve(makeFakeAccount()))
+    jest.spyOn(dbVerifyAccountRepositoryStub, 'verify').mockReturnValueOnce(Promise.resolve(true))
     const accountExists = await sut.verify('any_email')
     expect(accountExists).toBe(true)
   })
