@@ -11,9 +11,9 @@ export class AccountMongoRepository implements AddAccountRepository, VerifyExist
     return MongoHelper.map(result.ops[0])
   }
 
-  async verify (email: string): Promise<AccountModel> {
+  async verify (email: string): Promise<boolean> {
     const accountCollection = await MongoHelper.getCollection('accounts')
     const result = await accountCollection.findOne({ email })
-    return result ? MongoHelper.map(result) : null
+    return !!result
   }
 }

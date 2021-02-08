@@ -1,3 +1,3 @@
 export interface VerifyExistedAccount {
-  verify: (email: string) => Promise<boolean>
+  verify: (argument: string) => Promise<boolean>
 }

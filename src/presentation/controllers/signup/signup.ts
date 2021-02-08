@@ -24,9 +24,9 @@ export class SignupController implements Controller {
 
       const { name, email, password } = httpRequest.body
 
-      const alreadyExistsEmail = await this.verifyExistedAccount.verify(email)
+      const existsAccount = await this.verifyExistedAccount.verify(email)
 
-      if (alreadyExistsEmail) {
+      if (existsAccount) {
         return conflict('account already exists!')
       }
 

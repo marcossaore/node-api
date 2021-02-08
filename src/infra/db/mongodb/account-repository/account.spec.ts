@@ -41,21 +41,16 @@ describe('Account Mongo Repository', () => {
     expect(account.password).toBe('any_password')
   })
 
-  test('should return an account if email provided exists on db', async () => {
+  test('should return true if an account with email provided exists on db', async () => {
     await accountCollections.insertOne(makeAccount())
-
     const sut = makeSut()
-    const account = await sut.verify('any_email@mail.com')
-
-    expect(account).toBeTruthy()
-
-    expect(account.id).toBeTruthy()
-    expect(account.email).toBe('any_email@mail.com')
+    const exists = await sut.verify('any_email@mail.com')
+    expect(exists).toBe(true)
   })
 
-  test('should return null if email provided no exists on db', async () => {
+  test('should return false if email provided no exists on db', async () => {
     const sut = makeSut()
     const account = await sut.verify('any_email@mail.com')
-    expect(account).toBeNull()
+    expect(account).toBe(false)
   })
 })
