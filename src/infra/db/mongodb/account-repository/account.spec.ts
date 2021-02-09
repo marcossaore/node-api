@@ -10,7 +10,7 @@ const makeAccount = (): AddAccountModel => ({
 })
 
 describe('Account Mongo Repository', () => {
-  let accountCollections: Collection
+  let accountCollection: Collection
 
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
@@ -21,8 +21,8 @@ describe('Account Mongo Repository', () => {
   })
 
   beforeEach(async () => {
-    accountCollections = await MongoHelper.getCollection('accounts')
-    await accountCollections.deleteMany({})
+    accountCollection = await MongoHelper.getCollection('accounts')
+    await accountCollection.deleteMany({})
   })
 
   const makeSut = (): AccountMongoRepository => {
@@ -42,7 +42,7 @@ describe('Account Mongo Repository', () => {
   })
 
   test('should return true in if email provided to verify function exists on db', async () => {
-    await accountCollections.insertOne(makeAccount())
+    await accountCollection.insertOne(makeAccount())
     const sut = makeSut()
     const exists = await sut.verify('any_email@mail.com')
     expect(exists).toBe(true)
@@ -61,7 +61,7 @@ describe('Account Mongo Repository', () => {
   })
 
   test('should return an account when load function succeeds', async () => {
-    await accountCollections.insertOne(makeAccount())
+    await accountCollection.insertOne(makeAccount())
     const sut = makeSut()
     const account = await sut.loadByEmail('any_email@mail.com')
 
