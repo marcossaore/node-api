@@ -1,11 +1,10 @@
-import { UpdateAccessTokenRepository } from 'data/protocols/db/update-access-token-repository'
 import { BcryptAdapter } from '../../../infra/criptography/bcrypt-adapter/bcrypt-adapter'
 import { JwtAdapter } from '../../../infra/criptography/jwt-adapter/jwt-adapter'
-import { AccountMongoRepository } from '../../../infra/db/mongodb/account-repository/account'
+import { AccountMongoRepository } from '../../../infra/db/mongodb/account/account-mongo-repository'
 import { DbAuthentication } from '../../../data/usecases/authentication/db-authentication'
-import { LoginController } from '../../../presentation/controllers/login/login'
+import { LoginController } from '../../../presentation/controllers/login/login-controller'
 import { Controller } from '../../../presentation/protocols'
-import { makeLoginValidation } from './login-validation'
+import { makeLoginValidation } from './login-validation-factory'
 
 export const makeLoginController = (): Controller => {
   const salt = 12
@@ -13,7 +12,6 @@ export const makeLoginController = (): Controller => {
   const accountMongoRepository = new AccountMongoRepository()
   const hashComparer = new BcryptAdapter(salt)
   const encrypter = new JwtAdapter(secret)
-  const updateAccessTokenRepository: UpdateAccessTokenRepository = null
-  const authentication = new DbAuthentication(accountMongoRepository, hashComparer, encrypter, updateAccessTokenRepository)
+  const authentication = new DbAuthentication(accountMongoRepository, hashComparer, encrypter, accountMongoRepository)
   return new LoginController(makeLoginValidation(), authentication)
 }
