@@ -41,7 +41,7 @@ describe('Account Mongo Repository', () => {
     expect(account.password).toBe('any_password')
   })
 
-  test('should return true if  email provided to verify function exists on db', async () => {
+  test('should return true in if email provided to verify function exists on db', async () => {
     await accountCollections.insertOne(makeAccount())
     const sut = makeSut()
     const exists = await sut.verify('any_email@mail.com')
@@ -56,14 +56,14 @@ describe('Account Mongo Repository', () => {
 
   test('should return null if load function returns null', async () => {
     const sut = makeSut()
-    const exists = await sut.load('any_email@mail.com')
+    const exists = await sut.loadByEmail('any_email@mail.com')
     expect(exists).toBe(null)
   })
 
   test('should return an account when load function succeeds', async () => {
     await accountCollections.insertOne(makeAccount())
     const sut = makeSut()
-    const account = await sut.load('any_email@mail.com')
+    const account = await sut.loadByEmail('any_email@mail.com')
 
     expect(account).toBeTruthy()
     expect(account.id).toBeTruthy()
