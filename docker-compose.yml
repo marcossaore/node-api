@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  mongo:
+    image: mongo:3.6
+    restart: always
+    volumes:
+      - ./data:/data/db
+    ports:
+      - 27017:27017
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+  api:
+    build: .
+    image: clean-node-api
+    volumes:
+      - ./dist:/app/dist
+    ports:
+      - 5050:5050
+    command: npm start
+    depends_on:
+      mongo:
+        condition: service_healthy
+    links:
+      - "mongo"
+
+
+
+

@@ -1,0 +1,20 @@
+FROM node:14-alpine as builder
+
+WORKDIR /builder
+
+COPY . /builder
+
+RUN npm install
+
+RUN npm run build
+
+FROM node:14-alpine
+
+WORKDIR /app
+
+COPY --from=builder /builder/dist /app/dist/
+COPY --from=builder /builder/package.json /app/
+
+RUN npm install --only=prod
+
+CMD ["npm", "start"]
