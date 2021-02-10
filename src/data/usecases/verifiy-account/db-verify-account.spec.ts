@@ -1,4 +1,4 @@
-import { VerifyExistedAccountRepository } from '../../protocols/db/verify-existed-account-repository'
+import { VerifyExistedAccountRepository } from '../../protocols/db/account/verify-existed-account-repository'
 import { DbVerifyAccount } from './db-verify-account'
 
 const makeVerifyExistedAccountRepository = (): VerifyExistedAccountRepository => {

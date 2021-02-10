@@ -1,5 +1,5 @@
 import { VerifyExistedAccount } from '../../../domain/usecases/verify-existed-account'
-import { VerifyExistedAccountRepository } from '../../protocols/db/verify-existed-account-repository'
+import { VerifyExistedAccountRepository } from '../../protocols/db/account/verify-existed-account-repository'
 
 export class DbVerifyAccount implements VerifyExistedAccount {
   private readonly verifyExistedAccountRepository: VerifyExistedAccountRepository
