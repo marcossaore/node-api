@@ -19,6 +19,8 @@ services:
     working_dir: /app
     volumes:
       - ./package.json:/app/package.json
+      # ./folder:folder -> sincronia da pasta
+      # ./folder/:folder -> sincronia de arquivos dentro da pasta
       - ./dist:/app/dist
     ports:
       - 5050:5050
