@@ -14,15 +14,16 @@ services:
       retries: 5
       start_period: 40s
   api:
-    build: .
-    image: clean-node-api
+    # build: .
+    image: node:14-alpine
+    working_dir: /app
     volumes:
       - ./package.json:/app/package.json
       - ./dist:/app/dist
     ports:
       - 5050:5050
       - 9222:9222
-    command: npm run debug
+    command: sh -c "npm install --only=prod && npm run debug"
     depends_on:
       mongo:
         condition: service_healthy
