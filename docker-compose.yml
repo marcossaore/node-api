@@ -17,10 +17,12 @@ services:
     build: .
     image: clean-node-api
     volumes:
+      - ./package.json:/app/package.json
       - ./dist:/app/dist
     ports:
       - 5050:5050
-    command: npm start
+      - 9222:9222
+    command: npm run debug
     depends_on:
       mongo:
         condition: service_healthy
