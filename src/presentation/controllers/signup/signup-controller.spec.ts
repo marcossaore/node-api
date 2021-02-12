@@ -1,8 +1,8 @@
 import { SignupController } from './signup-controller'
-import { ServerError } from '../../errors'
+import { EmailInUseError, ServerError } from '../../errors'
 import { AddAccount, AddAccountModel, AccountModel, Authentication, AuthenticationModel } from './signup-controller-protocols'
 import { HttpRequest } from '../../protocols'
-import { badRequest, ok, serverError } from '../../helpers/http/http-helpers'
+import { badRequest, forbidden, ok, serverError } from '../../helpers/http/http-helpers'
 import { Validation } from '../../protocols/validation'
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -111,6 +111,13 @@ describe('Signup Controller', () => {
       name: 'any_name',
       password: 'any_password'
     })
+  })
+
+  test('should return 403 if already exists an account', async () => {
+    const { sut, addAccountStub } = makeSut()
+    jest.spyOn(addAccountStub, 'add').mockResolvedValueOnce(Promise.resolve(null))
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(forbidden(new EmailInUseError()))
   })
 
   test('should return 500 if AddAccount throws', async () => {
