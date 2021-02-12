@@ -1,7 +1,6 @@
-import { HttpRequest, Authentication, Validation } from './login-controller-protocols'
+import { HttpRequest, Authentication, Validation, AuthenticationModel } from './login-controller-protocols'
 import { badRequest, ok, serverError, unauthorized } from '../../helpers/http/http-helpers'
 import { LoginController } from './login-controller'
-import { AuthenticationModel } from '../../../domain/usecases/authetication'
 
 const makeValidation = (): Validation => {
   class ValidationStub implements Validation {

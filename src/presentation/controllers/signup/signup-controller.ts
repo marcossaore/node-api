@@ -1,17 +1,16 @@
-import { HttpRequest, HttpResponse, Controller, AddAccount } from './signup-controller-protocols'
-import { serverError, ok, badRequest, conflict } from '../../helpers/http/http-helpers'
+import { HttpRequest, HttpResponse, Controller, AddAccount, Authentication } from './signup-controller-protocols'
+import { serverError, ok, badRequest } from '../../helpers/http/http-helpers'
 import { Validation } from '../../protocols/validation'
-import { VerifyExistedAccount } from '../../../domain/usecases/verify-existed-account'
 
 export class SignupController implements Controller {
   private readonly validation: Validation
   private readonly addAccount: AddAccount
-  private readonly verifyExistedAccount: VerifyExistedAccount
+  private readonly authentication: Authentication
 
-  constructor (validation: Validation, addAccount: AddAccount, verifyExistedAccount: VerifyExistedAccount) {
+  constructor (validation: Validation, addAccount: AddAccount, authentication: Authentication) {
     this.validation = validation
     this.addAccount = addAccount
-    this.verifyExistedAccount = verifyExistedAccount
+    this.authentication = authentication
   }
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -24,14 +23,13 @@ export class SignupController implements Controller {
 
       const { name, email, password } = httpRequest.body
 
-      const existsAccount = await this.verifyExistedAccount.verify(email)
-
-      if (existsAccount) {
-        return conflict('account already exists!')
-      }
-
       const account = await this.addAccount.add({
         name,
+        email,
+        password
+      })
+
+      await this.authentication.auth({
         email,
         password
       })

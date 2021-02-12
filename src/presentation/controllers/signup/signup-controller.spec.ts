@@ -1,10 +1,9 @@
 import { SignupController } from './signup-controller'
 import { ServerError } from '../../errors'
-import { AddAccount, AddAccountModel, AccountModel } from './signup-controller-protocols'
+import { AddAccount, AddAccountModel, AccountModel, Authentication, AuthenticationModel } from './signup-controller-protocols'
 import { HttpRequest } from '../../protocols'
-import { badRequest, conflict, ok, serverError } from '../../helpers/http/http-helpers'
+import { badRequest, ok, serverError } from '../../helpers/http/http-helpers'
 import { Validation } from '../../protocols/validation'
-import { VerifyExistedAccount } from '../../../domain/usecases/verify-existed-account'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -42,36 +41,37 @@ const makeValidation = (): Validation => {
   return new ValidationStub()
 }
 
-const makeVerifyExistedAccount = (): VerifyExistedAccount => {
-  class VerifyExistedAccountStub implements VerifyExistedAccount {
-    async verify (email: string): Promise<boolean> {
-      return false
+const makeAuthentication = (): Authentication => {
+  class AutheticationStub implements Authentication {
+    async auth (authentication: AuthenticationModel): Promise<string> {
+      return 'any_token'
     }
   }
 
-  return new VerifyExistedAccountStub()
+  return new AutheticationStub()
 }
+
 interface SutType {
   sut: SignupController
   validationStub: Validation
   addAccountStub: AddAccount
-  verifyExistedAccountStub: VerifyExistedAccount
+  authenticationStub: Authentication
 }
 
 /**
   SUT: system under test
  */
 const makeSut = (): SutType => {
+  const authenticationStub = makeAuthentication()
   const validationStub = makeValidation()
   const addAccountStub = makeAddAccount()
-  const verifyExistedAccountStub = makeVerifyExistedAccount()
-  const sut = new SignupController(validationStub, addAccountStub, verifyExistedAccountStub)
+  const sut = new SignupController(validationStub, addAccountStub, authenticationStub)
 
   return {
     sut,
     validationStub,
     addAccountStub,
-    verifyExistedAccountStub
+    authenticationStub
   }
 }
 
@@ -122,18 +122,14 @@ describe('Signup Controller', () => {
     expect(httpResponse).toEqual(serverError(new ServerError(null)))
   })
 
-  test('should call VerifyExistedAccount with correct email', async () => {
-    const { sut, verifyExistedAccountStub } = makeSut()
-    const SpyVerify = jest.spyOn(verifyExistedAccountStub, 'verify')
+  test('should call Authentication with correct values', async () => {
+    const { sut, authenticationStub } = makeSut()
+    const authSpy = jest.spyOn(authenticationStub, 'auth')
     await sut.handle(makeFakeRequest())
-    expect(SpyVerify).toHaveBeenCalledWith('any_email@mail.com')
-  })
-
-  test('should return an conflict if an email existed is provided', async () => {
-    const { sut, verifyExistedAccountStub } = makeSut()
-    jest.spyOn(verifyExistedAccountStub, 'verify').mockReturnValueOnce(Promise.resolve(true))
-    const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(conflict('account already exists!'))
+    expect(authSpy).toHaveBeenCalledWith({
+      email: 'any_email@mail.com',
+      password: 'any_password'
+    })
   })
 
   test('should return 200 if valid data is provided', async () => {
