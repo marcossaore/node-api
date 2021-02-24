@@ -1,3 +1,4 @@
+import { TypeParamError } from '../../presentation/errors'
 import { TypeValidation } from '../../presentation/protocols'
 import { TypedFieldValidation } from './typed-field-validation'
 
@@ -35,5 +36,13 @@ describe('Typed Field Validation', () => {
     const fakeData = makeFakeData()
     sut.validate(fakeData)
     expect(validateSpy).toHaveBeenCalledWith(fakeData.field)
+  })
+
+  test('should return a TypeParamError if a field no applies correct type', () => {
+    const { sut, typeValidationStub } = makeSut('field')
+    jest.spyOn(typeValidationStub, 'validate').mockReturnValueOnce(new TypeParamError('field', 'string'))
+    const fakeData = makeFakeData()
+    const error = sut.validate(fakeData)
+    expect(error).toEqual(new TypeParamError('field', 'string'))
   })
 })
