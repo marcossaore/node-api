@@ -53,4 +53,11 @@ describe('Typed Field Validation', () => {
     })
     expect(sut.validate).toThrow()
   })
+
+  test('should not return on success', () => {
+    const { sut } = makeSut('field')
+    const fakeData = makeFakeData()
+    const error = sut.validate(fakeData)
+    expect(error).toBeFalsy()
+  })
 })
