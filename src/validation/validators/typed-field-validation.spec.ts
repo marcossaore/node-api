@@ -30,7 +30,7 @@ const makeSut = (fieldName: string): SutTypes => {
 }
 
 describe('Typed Field Validation', () => {
-  test('should call Validation with correct values', () => {
+  test('should call TypeFieldValidation with correct values', () => {
     const { sut, typeValidationStub } = makeSut('field')
     const validateSpy = jest.spyOn(typeValidationStub, 'validate')
     const fakeData = makeFakeData()
@@ -44,5 +44,13 @@ describe('Typed Field Validation', () => {
     const fakeData = makeFakeData()
     const error = sut.validate(fakeData)
     expect(error).toEqual(new TypeParamError('field', 'string'))
+  })
+
+  test('should throw if TypeFieldValidation throws', () => {
+    const { sut, typeValidationStub } = makeSut('field')
+    jest.spyOn(typeValidationStub, 'validate').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    expect(sut.validate).toThrow()
   })
 })
