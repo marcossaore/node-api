@@ -19,6 +19,15 @@ const makeNoAllowEmptyArrayValidation = (param: string): NoAllowEmptyArrayValida
   return new NoAllowEmptyArrayValidation(param)
 }
 
+const makeValidationStub = (): Validation => {
+  class ValidationStub implements Validation {
+    validate (params: any): Error {
+      return null
+    }
+  }
+
+  return new ValidationStub()
+}
 interface SutTypes {
   sut: ModelValidation
   validations: Validation[]
@@ -88,7 +97,7 @@ describe('Model Validator Factory', () => {
     expect(ValidationComposite).toHaveBeenCalledWith(validations)
   })
 
-  test('should call ModelValidation with correct value if required', () => {
+  test('should call ModelValidation if required', () => {
     const mapperModel: MapperModel = {
       name: {
         type: 'string',
@@ -105,7 +114,24 @@ describe('Model Validator Factory', () => {
     expect(ValidationComposite).toHaveBeenCalledWith(validations)
   })
 
-  test('should call NoAllowEmptyArrayValidation with correct value if field array cant be empty is provided', () => {
+  test('should call Validation if customValidations field is provided', () => {
+    const mapperModel: MapperModel = {
+      name: {
+        type: 'string',
+        customValidations: [makeValidationStub()]
+      }
+    }
+
+    const { sut, validations } = makeSut(mapperModel)
+
+    validations.push(makeTypeFieldValidation('name', 'string'))
+    validations.push(makeValidationStub())
+
+    sut.validate(makeFakeData())
+    expect(ValidationComposite).toHaveBeenCalledWith(validations)
+  })
+
+  test('should call NoAllowEmptyArrayValidation field array cant be empty is provided', () => {
     const mapperModel: MapperModel = {
       name: {
         type: 'array',
@@ -122,7 +148,22 @@ describe('Model Validator Factory', () => {
     expect(ValidationComposite).toHaveBeenCalledWith(validations)
   })
 
-  test('should not call NoAllowEmptyArrayValidation with correct value if field array can be empty is provided', () => {
+  test('should not call NoAllowEmptyArrayValidation field array can be empty is provided', () => {
+    const mapperModel: MapperModel = {
+      name: {
+        type: 'array'
+      }
+    }
+
+    const { sut, validations } = makeSut(mapperModel)
+
+    validations.push(makeTypeFieldValidation('name', 'array'))
+
+    sut.validate(makeFakeData())
+    expect(ValidationComposite).toHaveBeenCalledWith(validations)
+  })
+
+  test('should call Validation value if field array can be empty is provided', () => {
     const mapperModel: MapperModel = {
       name: {
         type: 'array'
