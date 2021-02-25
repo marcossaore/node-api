@@ -1,5 +1,5 @@
 import { TypeParamError } from '../../presentation/errors'
-import { TypeFieldValidation } from './type-field.validation'
+import { TypeFieldValidation } from './type-field-validation'
 
 describe('Required Field Validation', () => {
   test('should return a TypeParamError if field is boolean and the value provided is string', () => {
