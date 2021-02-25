@@ -1,5 +1,6 @@
 import { AddSurveyModelValidator } from './add-survey-model-validator'
 import { MissingParamError, TypeParamError } from '../../presentation/errors'
+import { AddSurveyModel } from '../../domain/usecases/add-survey'
 
 describe('AddSurvey Validator', () => {
   test('should returns TypeErrorParam if "question" to be invalid in model', () => {
@@ -73,5 +74,23 @@ describe('AddSurvey Validator', () => {
     }
     const error = sut.validate(surveyDataWithInvalidImage)
     expect(error).toEqual(new TypeParamError('answers[0].image', 'string'))
+  })
+
+  test('should not return on success', () => {
+    const sut = new AddSurveyModelValidator()
+    const surveyData: AddSurveyModel = {
+      question: 'Any question',
+      answers: [
+        {
+          answer: 'any_answer',
+          image: 'any_image'
+        },
+        {
+          answer: 'any_answer'
+        }
+      ]
+    }
+    const error = sut.validate(surveyData)
+    expect(error).toBeFalsy()
   })
 })
