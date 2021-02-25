@@ -2,6 +2,16 @@ import { AddSurveyModelValidator } from './add-survey-model-validator'
 import { MissingParamError, TypeParamError } from '../../presentation/errors'
 
 describe('AddSurvey Validator', () => {
+  test('should returns TypeErrorParam if "question" to be invalid in model', () => {
+    const sut = new AddSurveyModelValidator()
+    const surveyDateWithoutAnswers = {
+      question: [],
+      answers: null
+    }
+    const error = sut.validate(surveyDateWithoutAnswers)
+    expect(error).toEqual(new TypeParamError('question', 'string'))
+  })
+
   test('should returns TypeErrorParam if "answers" to be invalid in model', () => {
     const sut = new AddSurveyModelValidator()
     const surveyDateWithoutAnswers = {
