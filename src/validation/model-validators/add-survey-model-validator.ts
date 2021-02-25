@@ -19,6 +19,10 @@ export class AddSurveyModelValidator implements ModelValidator {
       if (!answer) {
         return new MissingParamError(`answers[${index}].answer`)
       }
+
+      if (typeof answer !== 'string') {
+        return new TypeParamError(`answers[${index}].answer`, 'string')
+      }
     }
   }
 }
