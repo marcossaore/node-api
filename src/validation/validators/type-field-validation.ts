@@ -1,7 +1,7 @@
 import { TypeParamError } from '../../presentation/errors'
 import { Validation } from '../../presentation/protocols'
 
-type TypeExpected = 'string' | 'number' | 'boolean' | 'undefined' | 'object' | 'function'
+export type TypeExpected = 'string' | 'number' | 'boolean' | 'undefined' | 'object' | 'function'
 
 export class TypeFieldValidation implements Validation {
   private readonly fieldName: string
