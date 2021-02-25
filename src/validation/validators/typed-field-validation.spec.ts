@@ -35,7 +35,7 @@ describe('Typed Field Validation', () => {
     const validateSpy = jest.spyOn(typeValidatorStub, 'validate')
     const fakeData = makeFakeData()
     sut.validate(fakeData)
-    expect(validateSpy).toHaveBeenCalledWith(fakeData.field)
+    expect(validateSpy).toHaveBeenCalledWith(fakeData)
   })
 
   test('should return a TypeParamError if a field no applies correct type', () => {

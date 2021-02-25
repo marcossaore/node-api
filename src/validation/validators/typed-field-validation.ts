@@ -10,7 +10,7 @@ export class TypedFieldValidation implements Validation {
   }
 
   validate (params: any): Error {
-    const error = this.typeValidator.validate(params[this.fieldName])
+    const error = this.typeValidator.validate(params)
     if (error) {
       return error
     }
