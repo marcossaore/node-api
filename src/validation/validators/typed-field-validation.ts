@@ -1,16 +1,16 @@
-import { TypeValidation, Validation } from '../../presentation/protocols'
+import { TypeValidator, Validation } from '../../presentation/protocols'
 
 export class TypedFieldValidation implements Validation {
   private readonly fieldName: string
-  private readonly typeValidation: TypeValidation
+  private readonly typeValidator: TypeValidator
 
-  constructor (fieldName: string, typeValidation: TypeValidation) {
+  constructor (fieldName: string, typeValidator: TypeValidator) {
     this.fieldName = fieldName
-    this.typeValidation = typeValidation
+    this.typeValidator = typeValidator
   }
 
   validate (params: any): Error {
-    const error = this.typeValidation.validate(params[this.fieldName])
+    const error = this.typeValidator.validate(params[this.fieldName])
     if (error) {
       return error
     }

@@ -1,54 +1,54 @@
 import { TypeParamError } from '../../presentation/errors'
-import { TypeValidation } from '../../presentation/protocols'
+import { TypeValidator } from '../../presentation/protocols'
 import { TypedFieldValidation } from './typed-field-validation'
 
 const makeFakeData = (): any => ({
   field: 'field'
 })
 
-const makeValidation = (): TypeValidation => {
-  class TypeValidationStub implements TypeValidation {
+const makeValidation = (): TypeValidator => {
+  class TypeValidatorStub implements TypeValidator {
     validate (params: any): Error {
       return null
     }
   }
-  return new TypeValidationStub()
+  return new TypeValidatorStub()
 }
 
 interface SutTypes {
   sut: TypedFieldValidation
-  typeValidationStub: TypeValidation
+  typeValidatorStub: TypeValidator
 }
 
 const makeSut = (fieldName: string): SutTypes => {
-  const typeValidationStub = makeValidation()
-  const sut = new TypedFieldValidation(fieldName, typeValidationStub)
+  const typeValidatorStub = makeValidation()
+  const sut = new TypedFieldValidation(fieldName, typeValidatorStub)
   return {
     sut,
-    typeValidationStub
+    typeValidatorStub
   }
 }
 
 describe('Typed Field Validation', () => {
   test('should call TypeFieldValidation with correct values', () => {
-    const { sut, typeValidationStub } = makeSut('field')
-    const validateSpy = jest.spyOn(typeValidationStub, 'validate')
+    const { sut, typeValidatorStub } = makeSut('field')
+    const validateSpy = jest.spyOn(typeValidatorStub, 'validate')
     const fakeData = makeFakeData()
     sut.validate(fakeData)
     expect(validateSpy).toHaveBeenCalledWith(fakeData.field)
   })
 
   test('should return a TypeParamError if a field no applies correct type', () => {
-    const { sut, typeValidationStub } = makeSut('field')
-    jest.spyOn(typeValidationStub, 'validate').mockReturnValueOnce(new TypeParamError('field', 'string'))
+    const { sut, typeValidatorStub } = makeSut('field')
+    jest.spyOn(typeValidatorStub, 'validate').mockReturnValueOnce(new TypeParamError('field', 'string'))
     const fakeData = makeFakeData()
     const error = sut.validate(fakeData)
     expect(error).toEqual(new TypeParamError('field', 'string'))
   })
 
   test('should throw if TypeFieldValidation throws', () => {
-    const { sut, typeValidationStub } = makeSut('field')
-    jest.spyOn(typeValidationStub, 'validate').mockImplementationOnce(() => {
+    const { sut, typeValidatorStub } = makeSut('field')
+    jest.spyOn(typeValidatorStub, 'validate').mockImplementationOnce(() => {
       throw new Error()
     })
     expect(sut.validate).toThrow()

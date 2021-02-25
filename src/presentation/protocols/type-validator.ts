@@ -1,3 +1,3 @@
-export interface TypeValidation {
+export interface TypeValidator {
   validate: (params: any) => Error
 }
