@@ -1,5 +1,5 @@
 import { AddSurveyModel } from '../../domain/usecases/add-survey'
-import { MissingParamError, TypeParamError } from '../../presentation/errors'
+import { InvalidParamError, MissingParamError, TypeParamError } from '../../presentation/errors'
 import { ModelValidator } from '../../presentation/protocols'
 
 export class AddSurveyModelValidator implements ModelValidator {
@@ -12,6 +12,10 @@ export class AddSurveyModelValidator implements ModelValidator {
 
     if (!Array.isArray(answers)) {
       return new TypeParamError('answers', 'array')
+    }
+
+    if (answers.length === 0) {
+      return new InvalidParamError('answers')
     }
 
     for (const [index, value] of answers.entries()) {
