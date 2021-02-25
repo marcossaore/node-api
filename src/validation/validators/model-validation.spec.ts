@@ -20,9 +20,9 @@ interface SutTypes {
   modelValidatorStub: ModelValidator
 }
 
-const makeSut = (fieldName: string): SutTypes => {
+const makeSut = (): SutTypes => {
   const modelValidatorStub = makeModelValidation()
-  const sut = new ModelValidation(fieldName, modelValidatorStub)
+  const sut = new ModelValidation(modelValidatorStub)
   return {
     sut,
     modelValidatorStub
@@ -31,7 +31,7 @@ const makeSut = (fieldName: string): SutTypes => {
 
 describe('Typed Field Validation', () => {
   test('should call TypeFieldValidation with correct values', () => {
-    const { sut, modelValidatorStub } = makeSut('field')
+    const { sut, modelValidatorStub } = makeSut()
     const validateSpy = jest.spyOn(modelValidatorStub, 'validate')
     const fakeData = makeFakeData()
     sut.validate(fakeData)
@@ -39,7 +39,7 @@ describe('Typed Field Validation', () => {
   })
 
   test('should return a TypeParamError if a field no applies correct type', () => {
-    const { sut, modelValidatorStub } = makeSut('field')
+    const { sut, modelValidatorStub } = makeSut()
     jest.spyOn(modelValidatorStub, 'validate').mockReturnValueOnce(new TypeParamError('field', 'string'))
     const fakeData = makeFakeData()
     const error = sut.validate(fakeData)
@@ -47,7 +47,7 @@ describe('Typed Field Validation', () => {
   })
 
   test('should throw if TypeFieldValidation throws', () => {
-    const { sut, modelValidatorStub } = makeSut('field')
+    const { sut, modelValidatorStub } = makeSut()
     jest.spyOn(modelValidatorStub, 'validate').mockImplementationOnce(() => {
       throw new Error()
     })
@@ -55,7 +55,7 @@ describe('Typed Field Validation', () => {
   })
 
   test('should not return on success', () => {
-    const { sut } = makeSut('field')
+    const { sut } = makeSut()
     const fakeData = makeFakeData()
     const error = sut.validate(fakeData)
     expect(error).toBeFalsy()

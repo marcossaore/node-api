@@ -3,7 +3,7 @@ import { ModelValidator, Validation } from '../../presentation/protocols'
 export class ModelValidation implements Validation {
   private readonly modelValidator: ModelValidator
 
-  constructor (fieldName: string, modelValidator: ModelValidator) {
+  constructor (modelValidator: ModelValidator) {
     this.modelValidator = modelValidator
   }
 
