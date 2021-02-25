@@ -4,7 +4,11 @@ import { ModelValidator } from '../../presentation/protocols'
 
 export class AddSurveyModelValidator implements ModelValidator {
   validate (params: any): Error {
-    const { answers }: AddSurveyModel = params as AddSurveyModel
+    const { question, answers }: AddSurveyModel = params as AddSurveyModel
+
+    if (typeof question !== 'string') {
+      return new TypeParamError('question', 'string')
+    }
 
     if (!Array.isArray(answers)) {
       return new TypeParamError('answers', 'array')
