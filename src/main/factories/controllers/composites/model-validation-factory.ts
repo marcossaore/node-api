@@ -1,4 +1,4 @@
-import { RequiredFieldValidation, TypeFieldValidation, ValidationComposite, TypeExpected } from '../../../../validation/validators'
+import { RequiredFieldValidation, TypeFieldValidation, ValidationComposite, TypeExpected, NoAllowEmptyArrayValidation } from '../../../../validation/validators'
 import { Validation } from '../../../../presentation/protocols'
 import { MapperModel } from './mapper-model'
 
@@ -20,6 +20,12 @@ export class ModelValidation implements Validation {
 
       if (object.required) {
         this.validations.push(new RequiredFieldValidation(key))
+      }
+
+      if (type === 'array') {
+        if (object.noAllowEmptyArray) {
+          this.validations.push(new NoAllowEmptyArrayValidation(key))
+        }
       }
     }
 
