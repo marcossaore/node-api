@@ -121,4 +121,19 @@ describe('Model Validator Factory', () => {
     sut.validate(makeFakeData())
     expect(ValidationComposite).toHaveBeenCalledWith(validations)
   })
+
+  test('should not call NoAllowEmptyArrayValidation with correct value if field array can be empty is provided', () => {
+    const mapperModel: MapperModel = {
+      name: {
+        type: 'array'
+      }
+    }
+
+    const { sut, validations } = makeSut(mapperModel)
+
+    validations.push(makeTypeFieldValidation('name', 'array'))
+
+    sut.validate(makeFakeData())
+    expect(ValidationComposite).toHaveBeenCalledWith(validations)
+  })
 })
