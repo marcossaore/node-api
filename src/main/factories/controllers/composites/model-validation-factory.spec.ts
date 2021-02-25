@@ -1,5 +1,5 @@
 import { ModelValidation } from './model-validation-factory'
-import { RequiredFieldValidation, TypeExpected, TypeFieldValidation, ValidationComposite } from '../../../../validation/validators'
+import { NoAllowEmptyArrayValidation, RequiredFieldValidation, TypeExpected, TypeFieldValidation, ValidationComposite } from '../../../../validation/validators'
 import { MapperModel } from './mapper-model'
 import { Validation } from '../../../../presentation/protocols'
 
@@ -13,6 +13,10 @@ const makeTypeFieldValidation = (param: string, typeExpected: TypeExpected): Typ
 
 const makeRequiredFieldValidation = (param: string): RequiredFieldValidation => {
   return new RequiredFieldValidation(param)
+}
+
+const makeNoAllowEmptyArrayValidation = (param: string): NoAllowEmptyArrayValidation => {
+  return new NoAllowEmptyArrayValidation(param)
 }
 
 interface SutTypes {
@@ -96,6 +100,23 @@ describe('Model Validator Factory', () => {
 
     validations.push(makeTypeFieldValidation('name', 'string'))
     validations.push(makeRequiredFieldValidation('name'))
+
+    sut.validate(makeFakeData())
+    expect(ValidationComposite).toHaveBeenCalledWith(validations)
+  })
+
+  test('should call NoAllowEmptyArrayValidation with correct value if field array cant be empty is provided', () => {
+    const mapperModel: MapperModel = {
+      name: {
+        type: 'array',
+        noAllowEmptyArray: true
+      }
+    }
+
+    const { sut, validations } = makeSut(mapperModel)
+
+    validations.push(makeTypeFieldValidation('name', 'array'))
+    validations.push(makeNoAllowEmptyArrayValidation('name'))
 
     sut.validate(makeFakeData())
     expect(ValidationComposite).toHaveBeenCalledWith(validations)
