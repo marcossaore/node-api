@@ -56,4 +56,22 @@ describe('AddSurvey Validator', () => {
     const error = sut.validate(surveyDataWithInvalidParamsInQuestion)
     expect(error).toEqual(new TypeParamError('answers[1].answer', 'string'))
   })
+
+  test('should returns TypeErrorParam if "answers[X].image" has an invalid type', () => {
+    const sut = new AddSurveyModelValidator()
+    const surveyDataWithInvalidImage = {
+      question: 'Any question',
+      answers: [
+        {
+          answer: 'any_answer',
+          image: []
+        },
+        {
+          answer: 'any_answer'
+        }
+      ]
+    }
+    const error = sut.validate(surveyDataWithInvalidImage)
+    expect(error).toEqual(new TypeParamError('answers[0].image', 'string'))
+  })
 })
