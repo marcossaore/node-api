@@ -4,7 +4,7 @@ export interface MapperModel {
   [dynamickey: string]: {
     type: string
     required?: boolean
-    addCustomValidations?: [Validation]
+    customValidations?: [Validation]
     noAllowEmptyArray?: boolean
     requiredSubFields?: {
       [dynamickeysubfield: string]: {

@@ -27,6 +27,10 @@ export class ModelValidation implements Validation {
           this.validations.push(new NoAllowEmptyArrayValidation(key))
         }
       }
+
+      if (object.customValidations) {
+        object.customValidations.map((validation) => this.validations.push(validation))
+      }
     }
 
     this.validationComposite = new ValidationComposite(this.validations)
