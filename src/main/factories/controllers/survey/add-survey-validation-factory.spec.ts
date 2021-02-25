@@ -1,6 +1,7 @@
 import { makeAddSurveyValidation } from './add-survey-validation-factory'
-import { RequiredFieldValidation, ValidationComposite } from '../../../../validation/validators'
-import { Validation } from '../../../../presentation/controllers/login/login-controller-protocols'
+import { RequiredFieldValidation, ValidationComposite, ModelValidation } from '../../../../validation/validators'
+import { AddSurveyModelValidator } from '../../../../validation/model-validators/add-survey-model-validator'
+import { Validation } from '../../../../presentation/protocols'
 
 jest.mock('../../../../validation/validators/validation-composite')
 
@@ -14,6 +15,8 @@ describe('SurveyValidation Factory', () => {
     for (const field of requiredFields) {
       validations.push(new RequiredFieldValidation(field))
     }
+    const modelValidator = new AddSurveyModelValidator()
+    validations.push(new ModelValidation(modelValidator))
 
     expect(ValidationComposite).toHaveBeenCalledWith(validations)
   })
