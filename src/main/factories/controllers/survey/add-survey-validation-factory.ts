@@ -1,6 +1,6 @@
 import { ValidationComposite } from '../../../../validation/validators'
 import { Validation } from '../../../../presentation/protocols'
-import { AddSurveyModelValidator } from '../../../../validation/model-validators/add-survey-model-validator'
+import { AddSurveySubFielsValidator } from '../../../../validation/subfiels-validators/add-survey-subfiles-validator'
 import { MapperModelValidator } from '../../../../presentation/protocols/mapper-model-validator'
 import { makeDefaultValidation } from '../../validations/default-validator-factory'
 
@@ -18,7 +18,7 @@ export const makeAddSurveyValidation = (): Validation => {
   }
 
   const validations = makeDefaultValidation(addSurveyMapperValidator)
-  validations.push(new AddSurveyModelValidator())
+  validations.push(new AddSurveySubFielsValidator())
 
   return new ValidationComposite(validations)
 }

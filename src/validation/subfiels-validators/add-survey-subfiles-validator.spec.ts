@@ -1,10 +1,10 @@
-import { AddSurveyModelValidator } from './add-survey-model-validator'
+import { AddSurveySubFielsValidator } from './add-survey-subfiles-validator'
 import { MissingParamError, TypeParamError } from '../../presentation/errors'
 import { AddSurveyModel } from '../../domain/usecases/add-survey'
 
 describe('AddSurvey Validator', () => {
   test('should returns MissingParamError if "answers[X].answer" is no provided', () => {
-    const sut = new AddSurveyModelValidator()
+    const sut = new AddSurveySubFielsValidator()
     const surveyDataWithoutParamsInQuestion = {
       question: 'Any question',
       answers: [
@@ -20,7 +20,7 @@ describe('AddSurvey Validator', () => {
   })
 
   test('should returns TypeErrorParam if "answers[X].answer" has an invalid type', () => {
-    const sut = new AddSurveyModelValidator()
+    const sut = new AddSurveySubFielsValidator()
     const surveyDataWithInvalidParamsInQuestion = {
       question: 'Any question',
       answers: [
@@ -39,7 +39,7 @@ describe('AddSurvey Validator', () => {
   })
 
   test('should returns TypeErrorParam if "answers[X].image" has an invalid type', () => {
-    const sut = new AddSurveyModelValidator()
+    const sut = new AddSurveySubFielsValidator()
     const surveyDataWithInvalidImage = {
       question: 'Any question',
       answers: [
@@ -57,7 +57,7 @@ describe('AddSurvey Validator', () => {
   })
 
   test('should not return on success', () => {
-    const sut = new AddSurveyModelValidator()
+    const sut = new AddSurveySubFielsValidator()
     const surveyData: AddSurveyModel = {
       question: 'Any question',
       answers: [

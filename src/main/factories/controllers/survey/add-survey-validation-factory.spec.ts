@@ -1,6 +1,6 @@
 import { makeAddSurveyValidation } from './add-survey-validation-factory'
 import { ValidationComposite } from '../../../../validation/validators'
-import { AddSurveyModelValidator } from '../../../../validation/model-validators/add-survey-model-validator'
+import { AddSurveySubFielsValidator } from '../../../../validation/subfiels-validators/add-survey-subfiles-validator'
 import { MapperModelValidator } from '../../../../presentation/protocols/mapper-model-validator'
 import { makeDefaultValidation } from '../../validations/default-validator-factory'
 
@@ -23,7 +23,7 @@ describe('SurveyValidation Factory', () => {
     }
 
     const validations = makeDefaultValidation(addSurveyMapperValidator)
-    validations.push(new AddSurveyModelValidator())
+    validations.push(new AddSurveySubFielsValidator())
     expect(ValidationComposite).toHaveBeenLastCalledWith(validations)
   })
 })

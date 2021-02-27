@@ -2,7 +2,7 @@ import { AddSurveyModel } from '../../domain/usecases/add-survey'
 import { MissingParamError, TypeParamError } from '../../presentation/errors'
 import { Validation } from '../../presentation/protocols'
 
-export class AddSurveyModelValidator implements Validation {
+export class AddSurveySubFielsValidator implements Validation {
   validate (params: any): Error {
     const { answers }: AddSurveyModel = params as AddSurveyModel
 
