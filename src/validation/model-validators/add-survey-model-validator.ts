@@ -1,22 +1,10 @@
 import { AddSurveyModel } from '../../domain/usecases/add-survey'
-import { InvalidParamError, MissingParamError, TypeParamError } from '../../presentation/errors'
-import { ModelValidator } from '../../presentation/protocols'
+import { MissingParamError, TypeParamError } from '../../presentation/errors'
+import { Validation } from '../../presentation/protocols'
 
-export class AddSurveyModelValidator implements ModelValidator {
+export class AddSurveyModelValidator implements Validation {
   validate (params: any): Error {
-    const { question, answers }: AddSurveyModel = params as AddSurveyModel
-
-    if (typeof question !== 'string') {
-      return new TypeParamError('question', 'string')
-    }
-
-    if (!Array.isArray(answers)) {
-      return new TypeParamError('answers', 'array')
-    }
-
-    if (answers.length === 0) {
-      return new InvalidParamError('answers')
-    }
+    const { answers }: AddSurveyModel = params as AddSurveyModel
 
     for (const [index, value] of answers.entries()) {
       const answer = value.answer

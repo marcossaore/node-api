@@ -1,17 +1,24 @@
-import { RequiredFieldValidation, ValidationComposite, ModelValidation } from '../../../../validation/validators'
+import { ValidationComposite } from '../../../../validation/validators'
 import { Validation } from '../../../../presentation/protocols'
 import { AddSurveyModelValidator } from '../../../../validation/model-validators/add-survey-model-validator'
+import { MapperModelValidator } from '../../../../presentation/protocols/mapper-model-validator'
+import { makeDefaultValidation } from '../../validations/default-validator-factory'
 
 export const makeAddSurveyValidation = (): Validation => {
-  const validations: Validation[] = []
-
-  const requiredFields = ['question', 'answers']
-  for (const field of requiredFields) {
-    validations.push(new RequiredFieldValidation(field))
+  const addSurveyMapperValidator: MapperModelValidator = {
+    question: {
+      type: 'string',
+      required: true
+    },
+    answers: {
+      type: 'array',
+      noAllowEmptyArray: true,
+      required: true
+    }
   }
 
-  const modelValidator = new AddSurveyModelValidator()
-  validations.push(new ModelValidation(modelValidator))
+  const validations = makeDefaultValidation(addSurveyMapperValidator)
+  validations.push(new AddSurveyModelValidator())
 
   return new ValidationComposite(validations)
 }
