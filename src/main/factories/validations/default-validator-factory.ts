@@ -8,7 +8,7 @@ export const makeDefaultValidation = (mapperModelValidator: MapperModelValidator
   for (const key in mapperModelValidator) {
     const object = mapperModelValidator[key]
 
-    const { type , required, customValidations } = object
+    const { type , required } = object
 
     if (type) {
       validations.push(new TypeFieldValidation(key, type as TypeExpected))
@@ -22,10 +22,6 @@ export const makeDefaultValidation = (mapperModelValidator: MapperModelValidator
       if (object.noAllowEmptyArray) {
         validations.push(new NoAllowEmptyArrayValidation(key))
       }
-    }
-
-    if (customValidations) {
-      customValidations.map((validation) => validations.push(validation))
     }
   }
 

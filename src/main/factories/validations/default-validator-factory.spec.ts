@@ -1,7 +1,6 @@
 import { makeDefaultValidation } from './default-validator-factory'
 import { NoAllowEmptyArrayValidation, RequiredFieldValidation, TypeExpected, TypeFieldValidation } from '../../../validation/validators'
 import { MapperModelValidator } from '../../../presentation/protocols/mapper-model-validator'
-import { Validation } from '../../../presentation/protocols'
 
 const makeTypeFieldValidation = (param: string, typeExpected: TypeExpected): TypeFieldValidation => {
   return new TypeFieldValidation(param, typeExpected)
@@ -13,16 +12,6 @@ const makeRequiredFieldValidation = (param: string): RequiredFieldValidation => 
 
 const makeNoAllowEmptyArrayValidation = (param: string): NoAllowEmptyArrayValidation => {
   return new NoAllowEmptyArrayValidation(param)
-}
-
-const makeValidationStub = (): Validation => {
-  class ValidationStub implements Validation {
-    validate (params: any): Error {
-      return null
-    }
-  }
-
-  return new ValidationStub()
 }
 
 beforeEach(() => {
@@ -76,21 +65,6 @@ describe('Model Validator Factory', () => {
     const expectedValidations = [
       makeTypeFieldValidation('name', 'string'),
       makeRequiredFieldValidation('name')
-    ]
-    const validations = makeDefaultValidation(mapperModel)
-    expect(validations).toEqual(expectedValidations)
-  })
-
-  test('should call Validation if customValidations field is provided', () => {
-    const mapperModel: MapperModelValidator = {
-      name: {
-        type: 'string',
-        customValidations: [makeValidationStub()]
-      }
-    }
-    const expectedValidations = [
-      makeTypeFieldValidation('name', 'string'),
-      makeValidationStub()
     ]
     const validations = makeDefaultValidation(mapperModel)
     expect(validations).toEqual(expectedValidations)
