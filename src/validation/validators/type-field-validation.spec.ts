@@ -29,11 +29,47 @@ describe('Required Field Validation', () => {
     expect(error).toEqual(new TypeParamError('field', 'array'))
   })
 
-  test('should not return on success', () => {
+  test('should not return on success if array type', () => {
+    const data = {
+      field: []
+    }
+    const sut = new TypeFieldValidation('field', 'array')
+    const error = sut.validate(data)
+    expect(error).toBeFalsy()
+  })
+
+  test('should not return on success if string type', () => {
     const data = {
       field: 'any_value'
     }
     const sut = new TypeFieldValidation('field', 'string')
+    const error = sut.validate(data)
+    expect(error).toBeFalsy()
+  })
+
+  test('should not return on success if boolean type', () => {
+    const data = {
+      field: false
+    }
+    const sut = new TypeFieldValidation('field', 'boolean')
+    const error = sut.validate(data)
+    expect(error).toBeFalsy()
+  })
+
+  test('should not return on success if boolean type', () => {
+    const data = {
+      field: false
+    }
+    const sut = new TypeFieldValidation('field', 'boolean')
+    const error = sut.validate(data)
+    expect(error).toBeFalsy()
+  })
+
+  test('should not return on success if object type', () => {
+    const data = {
+      field: {}
+    }
+    const sut = new TypeFieldValidation('field', 'object')
     const error = sut.validate(data)
     expect(error).toBeFalsy()
   })
