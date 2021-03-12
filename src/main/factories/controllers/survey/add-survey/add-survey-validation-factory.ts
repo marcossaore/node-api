@@ -1,8 +1,8 @@
-import { ValidationComposite } from '../../../../validation/validators'
-import { Validation } from '../../../../presentation/protocols'
-import { AddSurveySubFielsValidator } from '../../../../validation/subfiels-validators/add-survey-subfiles-validator'
-import { MapperModelValidator } from '../../../../presentation/protocols/mapper-model-validator'
-import { makeDefaultValidation } from '../../validations/default-validator-factory'
+import { ValidationComposite } from '../../../../../validation/validators'
+import { Validation } from '../../../../../presentation/protocols'
+import { AddSurveySubFielsValidator } from '../../../../../validation/subfiels-validators/add-survey-subfiles-validator'
+import { MapperModelValidator } from '../../../../../presentation/protocols/mapper-model-validator'
+import { makeDefaultValidation } from '../../../validations/default-validator-factory'
 
 export const makeAddSurveyValidation = (): Validation => {
   const addSurveyMapperValidator: MapperModelValidator = {

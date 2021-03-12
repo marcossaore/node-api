@@ -1,6 +1,6 @@
 import { Controller, HttpRequest, HttpResponse, Validation } from './add-survey-controller-protocols'
-import { badRequest, noContent, serverError } from '../../helpers/http/http-helpers'
-import { AddSurvey } from '../../../domain/usecases/add-survey'
+import { badRequest, noContent, serverError } from '../../../helpers/http/http-helpers'
+import { AddSurvey } from '../../../../domain/usecases/add-survey'
 export class AddSurveyController implements Controller {
   private readonly validation: Validation
   private readonly addSurvey: AddSurvey
