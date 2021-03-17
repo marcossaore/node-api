@@ -1,7 +1,7 @@
 
 import { SurveyModel, LoadSurvey, HttpRequest } from './load-survey-controller-protocols'
 import { LoadSurveyController } from './load-survey-controller'
-import { noContent } from '../../../helpers/http/http-helpers'
+import { noContent, serverError } from '../../../helpers/http/http-helpers'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: null,
@@ -49,6 +49,15 @@ describe('LoadSurvey Controller', () => {
     const loadSpy = jest.spyOn(loadSurveyStub, 'load')
     await sut.handle(makeFakeRequest())
     expect(loadSpy).toHaveBeenCalled()
+  })
+
+  test('should return server error if LoadSurvey use case throws', async () => {
+    const { sut, loadSurveyStub } = makeSut()
+    jest.spyOn(loadSurveyStub, 'load').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 
   test('should return 204 if no exists surveys', async () => {
