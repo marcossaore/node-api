@@ -1,6 +1,6 @@
 
-import { SurveyModel, LoadSurvey, HttpRequest } from './load-survey-controller-protocols'
-import { LoadSurveyController } from './load-survey-controller'
+import { SurveyModel, LoadSurveys, HttpRequest } from './load-surveys-controller-protocols'
+import { LoadSurveysController } from './load-surveys-controller'
 import { noContent, ok, serverError } from '../../../helpers/http/http-helpers'
 import MockDate from 'mockdate'
 
@@ -22,8 +22,8 @@ const makeFakeSurvey = (): SurveyModel => {
   }
 }
 
-const makeLoadSurvey = (): LoadSurvey => {
-  class LoadSurveyStub implements LoadSurvey {
+const makeLoadSurvey = (): LoadSurveys => {
+  class LoadSurveyStub implements LoadSurveys {
     async load (): Promise<SurveyModel[]> {
       return [makeFakeSurvey()]
     }
@@ -32,19 +32,19 @@ const makeLoadSurvey = (): LoadSurvey => {
 }
 
 type SutTypes = {
-  sut: LoadSurveyController
-  loadSurveyStub: LoadSurvey
+  sut: LoadSurveysController
+  loadSurveysStub: LoadSurveys
 }
 
 const makeSut = (): SutTypes => {
-  const loadSurveyStub = makeLoadSurvey()
-  const sut = new LoadSurveyController(loadSurveyStub)
+  const loadSurveysStub = makeLoadSurvey()
+  const sut = new LoadSurveysController(loadSurveysStub)
   return {
     sut,
-    loadSurveyStub
+    loadSurveysStub
   }
 }
-describe('LoadSurvey Controller', () => {
+describe('LoadSurveys Controller', () => {
   beforeAll(() => {
     MockDate.set(new Date())
   })
@@ -53,16 +53,16 @@ describe('LoadSurvey Controller', () => {
     MockDate.reset()
   })
 
-  test('should call LoadSurvey use case correctly', async () => {
-    const { sut, loadSurveyStub } = makeSut()
-    const loadSpy = jest.spyOn(loadSurveyStub, 'load')
+  test('should call LoadSurveys use case correctly', async () => {
+    const { sut, loadSurveysStub } = makeSut()
+    const loadSpy = jest.spyOn(loadSurveysStub, 'load')
     await sut.handle(makeFakeRequest())
     expect(loadSpy).toHaveBeenCalled()
   })
 
-  test('should return server error if LoadSurvey use case throws', async () => {
-    const { sut, loadSurveyStub } = makeSut()
-    jest.spyOn(loadSurveyStub, 'load').mockImplementationOnce(() => {
+  test('should return server error if LoadSurveys use case throws', async () => {
+    const { sut, loadSurveysStub } = makeSut()
+    jest.spyOn(loadSurveysStub, 'load').mockImplementationOnce(() => {
       throw new Error()
     })
     const httpResponse = await sut.handle(makeFakeRequest())
@@ -70,8 +70,8 @@ describe('LoadSurvey Controller', () => {
   })
 
   test('should return 204 if no exists surveys', async () => {
-    const { sut, loadSurveyStub } = makeSut()
-    jest.spyOn(loadSurveyStub, 'load').mockReturnValueOnce(null)
+    const { sut, loadSurveysStub } = makeSut()
+    jest.spyOn(loadSurveysStub, 'load').mockReturnValueOnce(null)
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(noContent())
   })

@@ -1,4 +1,4 @@
-import { SurveyModel, LoadSurveyRepository } from './db-load-survey-protocols'
+import { SurveyModel, LoadSurveysRepository } from './db-load-survey-protocols'
 import { DbLoadSurvey } from './db-load-survey'
 import MockDate from 'mockdate'
 
@@ -15,8 +15,8 @@ const makeFakeSurvey = (): SurveyModel => {
   }
 }
 
-const makeLoadSurveyRepository = (): LoadSurveyRepository => {
-  class LoadSurveyRepositoryStub implements LoadSurveyRepository {
+const makeLoadSurveyRepository = (): LoadSurveysRepository => {
+  class LoadSurveyRepositoryStub implements LoadSurveysRepository {
     async loadAll (): Promise<SurveyModel[]> {
       return [makeFakeSurvey()]
     }
@@ -26,15 +26,15 @@ const makeLoadSurveyRepository = (): LoadSurveyRepository => {
 
 type SutTypes = {
   sut: DbLoadSurvey
-  loadSurveyRepositorystub: LoadSurveyRepository
+  loadSurveysRepositorystub: LoadSurveysRepository
 }
 
 const makeSut = (): SutTypes => {
-  const loadSurveyRepositorystub = makeLoadSurveyRepository()
-  const sut = new DbLoadSurvey(loadSurveyRepositorystub)
+  const loadSurveysRepositorystub = makeLoadSurveyRepository()
+  const sut = new DbLoadSurvey(loadSurveysRepositorystub)
   return {
     sut,
-    loadSurveyRepositorystub
+    loadSurveysRepositorystub
   }
 }
 
@@ -47,23 +47,23 @@ describe('DbLoadSurvey', () => {
     MockDate.reset()
   })
 
-  test('should call LoadSurveyRepository correctly', async () => {
-    const { sut, loadSurveyRepositorystub } = makeSut()
-    const loadSpy = jest.spyOn(loadSurveyRepositorystub, 'loadAll')
+  test('should call LoadSurveysRepository correctly', async () => {
+    const { sut, loadSurveysRepositorystub } = makeSut()
+    const loadSpy = jest.spyOn(loadSurveysRepositorystub, 'loadAll')
     await sut.load()
     expect(loadSpy).toHaveBeenCalled()
   })
 
-  test('should return null if LoadSurveyRepository returns null', async () => {
-    const { sut, loadSurveyRepositorystub } = makeSut()
-    jest.spyOn(loadSurveyRepositorystub, 'loadAll').mockReturnValueOnce(null)
+  test('should return null if LoadSurveysRepository returns null', async () => {
+    const { sut, loadSurveysRepositorystub } = makeSut()
+    jest.spyOn(loadSurveysRepositorystub, 'loadAll').mockReturnValueOnce(null)
     const surveys = await sut.load()
     expect(surveys).toBeNull()
   })
 
-  test('should throw if LoadSurveyRepository throws', async () => {
-    const { sut, loadSurveyRepositorystub } = makeSut()
-    jest.spyOn(loadSurveyRepositorystub, 'loadAll').mockImplementationOnce(() => {
+  test('should throw if LoadSurveysRepository throws', async () => {
+    const { sut, loadSurveysRepositorystub } = makeSut()
+    jest.spyOn(loadSurveysRepositorystub, 'loadAll').mockImplementationOnce(() => {
       throw new Error()
     })
     const promise = sut.load()

@@ -48,7 +48,7 @@ describe('Survey Mongo Repository', () => {
   })
 
   describe('loadAll()', () => {
-    test('should return an survey on load success', async () => {
+    test('should return surveys on load success', async () => {
       const sut = makeSut()
       const fakeSurveys = [makeSurvey(),makeSurvey()]
       await surveyCollection.insertMany(fakeSurveys, { ordered: true })

@@ -1,11 +1,11 @@
 import { noContent, ok, serverError } from '../../../helpers/http/http-helpers'
-import { Controller, HttpRequest, HttpResponse, LoadSurvey } from './load-survey-controller-protocols'
+import { Controller, HttpRequest, HttpResponse, LoadSurveys } from './load-surveys-controller-protocols'
 
-export class LoadSurveyController implements Controller {
-  private readonly loadSurvey: LoadSurvey
+export class LoadSurveysController implements Controller {
+  private readonly loadSurvey: LoadSurveys
 
-  constructor (loadSurvey: LoadSurvey) {
-    this.loadSurvey = loadSurvey
+  constructor (loadSurveys: LoadSurveys) {
+    this.loadSurvey = loadSurveys
   }
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
