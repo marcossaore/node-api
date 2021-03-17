@@ -4,9 +4,54 @@ import { MongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper'
 import { Collection } from 'mongodb'
 import { sign } from 'jsonwebtoken'
 import env from '../config/env'
+import { SurveyModel } from '../../domain/models/survey'
 
 let surveyCollection: Collection
 let accountCollection: Collection
+
+const createAccount = async (): Promise<any> => {
+  return await accountCollection.insertOne({
+    name: 'user',
+    email: 'user@email.com',
+    password: '123',
+    role: 'admin'
+  })
+}
+
+const updateAccount = async (id, accessToken): Promise<void> => {
+  await accountCollection.updateOne({
+    _id: id
+  }, {
+    $set: {
+      accessToken
+    }
+  })
+}
+
+const makeFakeSurvey = (): SurveyModel => {
+  return {
+    id: 'any_id',
+    question: 'any_question',
+    answers: [
+      {
+        answer: 'any_answer'
+      }
+    ],
+    date: new Date()
+  }
+}
+
+const createSurveys = async (): Promise<void> => {
+  await surveyCollection.insertMany([makeFakeSurvey(), makeFakeSurvey()], { ordered: true })
+}
+
+const extractAccessTokenFromAccount = async (): Promise<string> => {
+  const response = await createAccount()
+  const id = response.ops[0]._id
+  const accessToken = sign({ id }, env.secret)
+  await updateAccount(id, accessToken)
+  return accessToken
+}
 
 describe('Survey Routes', () => {
   beforeAll(async () => {
@@ -23,6 +68,7 @@ describe('Survey Routes', () => {
     accountCollection = await MongoHelper.getCollection('accounts')
     await accountCollection.deleteMany({})
   })
+
   describe('POST /surveys', () => {
     test('Should return 403 on add survey without accessToken', async () => {
       await request(app)
@@ -44,25 +90,9 @@ describe('Survey Routes', () => {
         })
         .expect(403)
     })
+
     test('Should return 204 on add survey with valid accessToken', async () => {
-      const res = await accountCollection.insertOne({
-        name: 'user',
-        email: 'user@email.com',
-        password: '123',
-        role: 'admin'
-      })
-
-      const id = res.ops[0]._id
-      const accessToken = sign({ id }, env.secret)
-
-      await accountCollection.updateOne({
-        _id: id
-      }, {
-        $set: {
-          accessToken
-        }
-      })
-
+      const accessToken = await extractAccessTokenFromAccount()
       await request(app)
         .post('/api/surveys')
         .set('x-access-token', accessToken)
@@ -82,6 +112,31 @@ describe('Survey Routes', () => {
           ]
         })
         .expect(204)
+    })
+  })
+
+  describe('get /surveys', () => {
+    test('Should return 403 on load survey without accessToken', async () => {
+      await request(app)
+        .get('/api/surveys')
+        .expect(403)
+    })
+
+    test('Should return 204 on load survey with accessToken if no exists surveys', async () => {
+      const accessToken = await extractAccessTokenFromAccount()
+      await request(app)
+        .get('/api/surveys')
+        .set('x-access-token', accessToken)
+        .expect(204)
+    })
+
+    test('Should return 200 on load survey with accessToken on success', async () => {
+      await createSurveys()
+      const accessToken = await extractAccessTokenFromAccount()
+      await request(app)
+        .get('/api/surveys')
+        .set('x-access-token', accessToken)
+        .expect(200)
     })
   })
 })
