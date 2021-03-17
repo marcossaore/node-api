@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/marcossaore/node-api.svg?branch=master)](https://travis-ci.org/marcossaore/node-api)
-
 [![Coverage Status](https://coveralls.io/repos/github/marcossaore/node-api/badge.svg)](https://coveralls.io/github/marcossaore/node-api)
 
 # **Clean Node API**
