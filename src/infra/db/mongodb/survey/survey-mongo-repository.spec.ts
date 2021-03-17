@@ -34,14 +34,30 @@ describe('Survey Mongo Repository', () => {
     return new SurveyMongoRepository()
   }
 
-  test('Should return an survey on add success', async () => {
-    const sut = makeSut()
-    const fakeSurvey = makeSurvey()
-    await sut.add(fakeSurvey)
-    const survey = await surveyCollection.findOne({ question: fakeSurvey.question })
-    expect(survey).toBeTruthy()
-    expect(survey.question).toBe('any_question')
-    expect(survey.answers[0].image).toBe('any_image')
-    expect(survey.answers[0].answer).toBe('any_answer')
+  describe('add()', () => {
+    test('Should return an survey on add success', async () => {
+      const sut = makeSut()
+      const fakeSurvey = makeSurvey()
+      await sut.add(fakeSurvey)
+      const survey = await surveyCollection.findOne({ question: fakeSurvey.question })
+      expect(survey).toBeTruthy()
+      expect(survey.question).toBe('any_question')
+      expect(survey.answers[0].image).toBe('any_image')
+      expect(survey.answers[0].answer).toBe('any_answer')
+    })
+  })
+
+  describe('loadAll()', () => {
+    test('should return an survey on load success', async () => {
+      const sut = makeSut()
+      const fakeSurveys = [makeSurvey(),makeSurvey()]
+      await surveyCollection.insertMany(fakeSurveys, { ordered: true })
+      const surveys = await sut.loadAll()
+      expect(surveys).toBeTruthy()
+      expect(surveys[0].id).toBeTruthy()
+      expect(surveys[0].question).toBe('any_question')
+      expect(surveys[1].id).toBeTruthy()
+      expect(surveys[1].question).toBe('any_question')
+    })
   })
 })
