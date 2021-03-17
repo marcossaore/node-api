@@ -44,4 +44,11 @@ describe('DbLoadSurvey', () => {
     await sut.load()
     expect(loadSpy).toHaveBeenCalled()
   })
+
+  test('should return null if LoadSurveyRepository returns null', async () => {
+    const { sut, loadSurveyRepositorystub } = makeSut()
+    jest.spyOn(loadSurveyRepositorystub, 'loadAll').mockReturnValueOnce(null)
+    const surveys = await sut.load()
+    expect(surveys).toBeNull()
+  })
 })
