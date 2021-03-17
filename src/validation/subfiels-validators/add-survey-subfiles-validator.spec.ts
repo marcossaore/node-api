@@ -1,6 +1,5 @@
 import { AddSurveySubFielsValidator } from './add-survey-subfiles-validator'
 import { MissingParamError, TypeParamError } from '../../presentation/errors'
-import { AddSurveyModel } from '../../domain/usecases/add-survey'
 
 const makeSut = (): AddSurveySubFielsValidator => {
   return new AddSurveySubFielsValidator()
@@ -62,7 +61,7 @@ describe('AddSurvey Validator', () => {
 
   test('should not return on success', () => {
     const sut = new AddSurveySubFielsValidator()
-    const surveyData: AddSurveyModel = {
+    const surveyData = {
       question: 'Any question',
       answers: [
         {
