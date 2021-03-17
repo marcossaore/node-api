@@ -1,4 +1,4 @@
-import { noContent, serverError } from '../../../helpers/http/http-helpers'
+import { noContent, ok, serverError } from '../../../helpers/http/http-helpers'
 import { Controller, HttpRequest, HttpResponse, LoadSurvey } from './load-survey-controller-protocols'
 
 export class LoadSurveyController implements Controller {
@@ -14,7 +14,7 @@ export class LoadSurveyController implements Controller {
       if (!surveys) {
         return noContent()
       }
-      return null
+      return ok(surveys)
     } catch (error) {
       return serverError(error)
     }
