@@ -1,5 +1,5 @@
-import { TypeParamError } from '../../presentation/errors'
-import { Validation } from '../../presentation/protocols'
+import { TypeParamError } from '@/presentation/errors'
+import { Validation } from '@/presentation/protocols'
 
 export type TypeExpected = 'string' | 'number' | 'boolean' | 'object' | 'array'
 

@@ -1,6 +1,6 @@
 import { makeDefaultValidation } from './default-validator-factory'
-import { NoAllowEmptyArrayValidation, RequiredFieldValidation, TypeExpected, TypeFieldValidation } from '../../../validation/validators'
-import { MapperModelValidator } from '../../../presentation/protocols/mapper-model-validator'
+import { MapperModelValidator } from '@/presentation/protocols/mapper-model-validator'
+import { NoAllowEmptyArrayValidation, RequiredFieldValidation, TypeExpected, TypeFieldValidation } from '@/validation/validators'
 
 const makeTypeFieldValidation = (param: string, typeExpected: TypeExpected): TypeFieldValidation => {
   return new TypeFieldValidation(param, typeExpected)

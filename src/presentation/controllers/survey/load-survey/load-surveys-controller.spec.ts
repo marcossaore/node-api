@@ -1,7 +1,7 @@
 
 import { SurveyModel, LoadSurveys, HttpRequest } from './load-surveys-controller-protocols'
+import { noContent, ok, serverError } from '@/presentation/helpers/http/http-helpers'
 import { LoadSurveysController } from './load-surveys-controller'
-import { noContent, ok, serverError } from '../../../helpers/http/http-helpers'
 import MockDate from 'mockdate'
 
 const makeFakeRequest = (): HttpRequest => ({

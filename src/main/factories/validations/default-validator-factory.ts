@@ -1,6 +1,6 @@
-import { Validation } from '../../../presentation/protocols'
-import { RequiredFieldValidation, TypeFieldValidation, TypeExpected, NoAllowEmptyArrayValidation } from '../../../validation/validators'
-import { MapperModelValidator } from '../../../presentation/protocols/mapper-model-validator'
+import { Validation } from '@/presentation/protocols'
+import { MapperModelValidator } from '@/presentation/protocols/mapper-model-validator'
+import { RequiredFieldValidation, TypeFieldValidation, TypeExpected, NoAllowEmptyArrayValidation } from '@/validation/validators'
 
 export const makeDefaultValidation = (mapperModelValidator: MapperModelValidator): Validation[] => {
   const validations: Validation[] = []

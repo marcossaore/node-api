@@ -1,5 +1,5 @@
 import { AddSurveySubFielsValidator } from './add-survey-subfiles-validator'
-import { MissingParamError, TypeParamError } from '../../presentation/errors'
+import { MissingParamError, TypeParamError } from '@/presentation/errors'
 
 const makeSut = (): AddSurveySubFielsValidator => {
   return new AddSurveySubFielsValidator()

@@ -1,6 +1,6 @@
-import { AddSurveyModel } from '../../domain/usecases/add-survey'
-import { MissingParamError, TypeParamError } from '../../presentation/errors'
-import { Validation } from '../../presentation/protocols'
+import { AddSurveyModel } from '@/domain/usecases/add-survey'
+import { MissingParamError, TypeParamError } from '@/presentation/errors'
+import { Validation } from '@/presentation/protocols'
 
 export class AddSurveySubFielsValidator implements Validation {
   validate (params: any): Error {

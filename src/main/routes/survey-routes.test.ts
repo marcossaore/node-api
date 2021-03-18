@@ -1,10 +1,10 @@
 import request from 'supertest'
-import app from '../config/app'
-import { MongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper'
+import { SurveyModel } from '@/domain/models/survey'
+import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
+import app from '@/main/config/app'
+import env from '@/main/config/env'
 import { Collection } from 'mongodb'
 import { sign } from 'jsonwebtoken'
-import env from '../config/env'
-import { SurveyModel } from '../../domain/models/survey'
 
 let surveyCollection: Collection
 let accountCollection: Collection

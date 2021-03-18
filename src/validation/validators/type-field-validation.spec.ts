@@ -1,4 +1,4 @@
-import { TypeParamError } from '../../presentation/errors'
+import { TypeParamError } from '@/presentation/errors'
 import { TypeFieldValidation } from './type-field-validation'
 
 describe('Required Field Validation', () => {

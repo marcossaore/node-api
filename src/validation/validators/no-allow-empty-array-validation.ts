@@ -1,5 +1,5 @@
-import { NoAllowEmptyArrayError } from '../../presentation/errors'
-import { Validation } from '../../presentation/protocols'
+import { NoAllowEmptyArrayError } from '@/presentation/errors'
+import { Validation } from '@/presentation/protocols'
 
 export class NoAllowEmptyArrayValidation implements Validation {
   private readonly fieldName: string

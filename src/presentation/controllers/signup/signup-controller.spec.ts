@@ -1,9 +1,9 @@
 import { SignupController } from './signup-controller'
-import { EmailInUseError, ServerError } from '../../errors'
 import { AddAccount, AddAccountModel, AccountModel, Authentication, AuthenticationModel } from './signup-controller-protocols'
-import { HttpRequest } from '../../protocols'
-import { badRequest, forbidden, ok, serverError } from '../../helpers/http/http-helpers'
-import { Validation } from '../../protocols/validation'
+import { EmailInUseError, ServerError } from '@/presentation/errors'
+import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/http/http-helpers'
+import { HttpRequest } from '@/presentation/protocols'
+import { Validation } from '@/presentation/protocols/validation'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -51,7 +51,7 @@ const makeAuthentication = (): Authentication => {
   return new AutheticationStub()
 }
 
-interface SutType {
+type SutType = {
   sut: SignupController
   validationStub: Validation
   addAccountStub: AddAccount

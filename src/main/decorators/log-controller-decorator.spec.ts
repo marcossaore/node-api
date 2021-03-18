@@ -1,7 +1,7 @@
-import { serverError, ok } from '../../presentation/helpers/http/http-helpers'
-import { Controller, HttpRequest, HttpResponse } from '../../presentation/protocols'
+import { LogErrorRepository } from '@/data/protocols/db/log/log-error-repository'
+import { serverError, ok } from '@/presentation/helpers/http/http-helpers'
+import { Controller, HttpRequest, HttpResponse } from '@/presentation/protocols'
 import { LogControllerDecorator } from './log-controller-decorator'
-import { LogErrorRepository } from '../../data/protocols/db/log/log-error-repository'
 
 const makeController = (): Controller => {
   class ControlerStub implements Controller {
@@ -38,7 +38,7 @@ const makeFakeServerError = (): HttpResponse => {
   fakeError.stack = 'stack_error'
   return serverError(fakeError)
 }
-interface SutTypes {
+type SutTypes = {
   controllerStub: Controller
   sut: LogControllerDecorator
   logErrorRepository: LogErrorRepository

@@ -1,10 +1,10 @@
 import { makeAddSurveyValidation } from './add-survey-validation-factory'
-import { ValidationComposite } from '../../../../../validation/validators'
-import { AddSurveySubFielsValidator } from '../../../../../validation/subfiels-validators/add-survey-subfiles-validator'
-import { MapperModelValidator } from '../../../../../presentation/protocols/mapper-model-validator'
-import { makeDefaultValidation } from '../../../validations/default-validator-factory'
+import { ValidationComposite } from '@/validation/validators'
+import { AddSurveySubFielsValidator } from '@/validation/subfiels-validators/add-survey-subfiles-validator'
+import { MapperModelValidator } from '@/presentation/protocols/mapper-model-validator'
+import { makeDefaultValidation } from '@/main/factories/validations/default-validator-factory'
 
-jest.mock('../../../../../validation/validators/validation-composite')
+jest.mock('@/validation/validators/validation-composite')
 
 describe('SurveyValidation Factory', () => {
   test('should call ValidationComposite with all validations', () => {

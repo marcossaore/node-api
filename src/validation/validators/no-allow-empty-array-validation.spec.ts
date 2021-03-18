@@ -1,4 +1,4 @@
-import { NoAllowEmptyArrayError } from '../../presentation/errors'
+import { NoAllowEmptyArrayError } from '@/presentation/errors'
 import { NoAllowEmptyArrayValidation } from './no-allow-empty-array-validation'
 
 describe('NoAllowEmptyArray Validation', () => {
