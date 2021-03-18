@@ -1,5 +1,5 @@
 import { AccessDeniedError, MissingParamError } from '@/presentation/errors'
-import { badRequest, forbidden } from '@/presentation/helpers/http/http-helpers'
+import { badRequest, forbidden, serverError } from '@/presentation/helpers/http/http-helpers'
 import { Controller, HttpRequest, HttpResponse, LoadSurveyById } from './save-survey-result-controller-protocols'
 
 export class SaveSurveyResult implements Controller {
@@ -9,13 +9,17 @@ export class SaveSurveyResult implements Controller {
   }
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-    const surveyId = httpRequest.parameters?.surveyId
-    if (!surveyId) {
-      return badRequest(new MissingParamError('surveyId'))
-    }
-    const survey = await this.loadSurveyById.load(surveyId)
-    if (!survey) {
-      return forbidden(new AccessDeniedError())
+    try {
+      const surveyId = httpRequest.parameters?.surveyId
+      if (!surveyId) {
+        return badRequest(new MissingParamError('surveyId'))
+      }
+      const survey = await this.loadSurveyById.load(surveyId)
+      if (!survey) {
+        return forbidden(new AccessDeniedError())
+      }
+    } catch (error) {
+      return serverError(error)
     }
   }
 }
