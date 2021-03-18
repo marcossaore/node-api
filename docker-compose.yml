@@ -25,6 +25,8 @@ services:
     ports:
       - 5050:5050
       - 9222:9222
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/clean-node-api
     command: sh -c "npm install --only=prod && npm run debug"
     depends_on:
       mongo:
