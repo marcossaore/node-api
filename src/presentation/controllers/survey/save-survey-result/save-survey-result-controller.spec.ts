@@ -1,6 +1,6 @@
 import { HttpRequest, LoadSurveyById } from './save-survey-result-controller-protocols'
 import { SaveSurveyResult } from './save-survey-result-controller'
-import { badRequest, forbidden } from '@/presentation/helpers/http/http-helpers'
+import { badRequest, forbidden, serverError } from '@/presentation/helpers/http/http-helpers'
 import { AccessDeniedError, MissingParamError } from '@/presentation/errors'
 import { SurveyModel } from '@/domain/models/survey'
 import MockDate from 'mockdate'
@@ -76,5 +76,14 @@ describe('SaveSurveyResult Controller', () => {
     jest.spyOn(loadSurveyByIdStub, 'load').mockReturnValueOnce(null)
     const hhtpResponse = await sut.handle(makeFakeRequest())
     expect(hhtpResponse).toEqual(forbidden(new AccessDeniedError()))
+  })
+
+  test('should return 500 if LoadSurveyById throws', async () => {
+    const { sut, loadSurveyByIdStub } = makeSut()
+    jest.spyOn(loadSurveyByIdStub, 'load').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const hhtpResponse = await sut.handle(makeFakeRequest())
+    expect(hhtpResponse).toEqual(serverError(new Error()))
   })
 })
