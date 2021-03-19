@@ -1,4 +1,4 @@
-import { AccessDeniedError } from '@/presentation/errors'
+import { InvalidParamError } from '@/presentation/errors'
 import { badRequest, forbidden, serverError } from '@/presentation/helpers/http/http-helpers'
 import { Validation } from '@/presentation/protocols'
 import { Controller, HttpRequest, HttpResponse, LoadSurveyById } from './save-survey-result-controller-protocols'
@@ -22,7 +22,13 @@ export class SaveSurveyResult implements Controller {
 
       const survey = await this.loadSurveyById.load(surveyId)
       if (!survey) {
-        return forbidden(new AccessDeniedError())
+        return forbidden(new InvalidParamError('surveyId'))
+      }
+
+      const answer = survey.answers.filter(answer => answer.answer === httpRequest.body.answer)
+
+      if (answer.length === 0) {
+        return forbidden(new InvalidParamError('answer'))
       }
     } catch (error) {
       return serverError(error)
