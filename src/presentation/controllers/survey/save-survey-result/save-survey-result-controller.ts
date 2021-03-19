@@ -1,14 +1,18 @@
+import { SaveSurveyResult } from '@/domain/usecases/save-survey-result'
 import { InvalidParamError } from '@/presentation/errors'
 import { badRequest, forbidden, serverError } from '@/presentation/helpers/http/http-helpers'
 import { Validation } from '@/presentation/protocols'
 import { Controller, HttpRequest, HttpResponse, LoadSurveyById } from './save-survey-result-controller-protocols'
 
-export class SaveSurveyResult implements Controller {
+export class SaveSurveyResultController implements Controller {
   private readonly loadSurveyById: LoadSurveyById
   private readonly validation: Validation
-  constructor (validation: Validation, loadSurveyById: LoadSurveyById) {
+  private readonly saveSurveyResult: SaveSurveyResult
+
+  constructor (validation: Validation, loadSurveyById: LoadSurveyById, saveSurveyResult: SaveSurveyResult) {
     this.loadSurveyById = loadSurveyById
     this.validation = validation
+    this.saveSurveyResult = saveSurveyResult
   }
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -30,6 +34,11 @@ export class SaveSurveyResult implements Controller {
       if (answer.length === 0) {
         return forbidden(new InvalidParamError('answer'))
       }
+
+      await this.saveSurveyResult.save({
+        questionId: survey.id,
+        answer: httpRequest.body.answer
+      })
     } catch (error) {
       return serverError(error)
     }
