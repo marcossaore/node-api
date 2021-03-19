@@ -1,6 +1,6 @@
 import { SurveyResultModel } from '../models/survey-result'
 
-export interface SurveyResult {
+export type SurveyResult = {
   questionId: string
   answer: string
 }
