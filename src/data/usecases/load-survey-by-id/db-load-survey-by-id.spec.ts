@@ -61,8 +61,8 @@ describe('DbLoadSurveyById UseCase', () => {
   test('should return null if LoadSurveyByIdRepository returns null', async () => {
     const { sut, loadSurveyByIdRepositoryStub } = makeSut()
     jest.spyOn(loadSurveyByIdRepositoryStub, 'loadById').mockReturnValueOnce(null)
-    const surveyResult = await sut.load(id)
-    expect(surveyResult).toBeNull()
+    const survey = await sut.load(id)
+    expect(survey).toBeNull()
   })
 
   test('should throw if LoadSurveyByIdRepository throws', async () => {

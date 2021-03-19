@@ -1,7 +1,7 @@
-import { SaveSurveyResultRepository, SurveyResult, SurveyResultModel } from './db-save-survey-result-protocols'
+import { SaveSurveyResultRepository, SurveyVote, SurveyResultModel } from './db-save-survey-result-protocols'
 import { DbSaveSurveyResult } from './db-save-survey-result'
 
-const makeFakeResult = (): SurveyResult => ({
+const makeFakeResult = (): SurveyVote => ({
   questionId: 'any_question_id',
   answer: 'answer_1'
 })
@@ -23,7 +23,7 @@ const makeFakeResultModel = (): SurveyResultModel => ({
 
 const makeSaveSurveyResultRepository = (): SaveSurveyResultRepository => {
   class SaveSurveyResultRepositoryStub implements SaveSurveyResultRepository {
-    async save (data: SurveyResult): Promise<SurveyResultModel> {
+    async save (surveyVote: SurveyVote): Promise<SurveyResultModel> {
       return makeFakeResultModel()
     }
   }
@@ -59,5 +59,11 @@ describe('DbSaveSurveyResult UseCase', () => {
     })
     const promise = sut.save(makeFakeResult())
     await expect(promise).rejects.toThrow()
+  })
+
+  test('should return a survey result on success', async () => {
+    const { sut } = makeSut()
+    const surveyResult = await sut.save(makeFakeResult())
+    expect(surveyResult).toEqual(makeFakeResultModel())
   })
 })
