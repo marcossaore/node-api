@@ -1,7 +1,7 @@
 import { HttpRequest, LoadSurveyById } from './save-survey-result-controller-protocols'
 import { SaveSurveyResult } from './save-survey-result-controller'
 import { badRequest, forbidden, serverError } from '@/presentation/helpers/http/http-helpers'
-import { AccessDeniedError, MissingParamError } from '@/presentation/errors'
+import { InvalidParamError, MissingParamError } from '@/presentation/errors'
 import { SurveyModel } from '@/domain/models/survey'
 import MockDate from 'mockdate'
 import { Validation } from '@/presentation/protocols'
@@ -20,10 +20,10 @@ const makeFakeSurveyModel = (): SurveyModel => ({
   question: 'any_question',
   answers: [
     {
-      answer: 'first_answer'
+      answer: 'other_answer'
     },
     {
-      answer: 'second_answer'
+      answer: 'any_answer'
     }
   ],
   date: new Date()
@@ -113,7 +113,7 @@ describe('SaveSurveyResult Controller', () => {
     const { sut, loadSurveyByIdStub } = makeSut()
     jest.spyOn(loadSurveyByIdStub, 'load').mockReturnValueOnce(null)
     const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(forbidden(new AccessDeniedError()))
+    expect(httpResponse).toEqual(forbidden(new InvalidParamError('surveyId')))
   })
 
   test('should return 500 if LoadSurveyById throws', async () => {
@@ -123,5 +123,24 @@ describe('SaveSurveyResult Controller', () => {
     })
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('should return 403 if answer is invalid', async () => {
+    const { sut, loadSurveyByIdStub } = makeSut()
+    jest.spyOn(loadSurveyByIdStub, 'load').mockReturnValueOnce(Promise.resolve({
+      id: 'any_id',
+      question: 'any_question',
+      answers: [
+        {
+          answer: 'first_answer'
+        },
+        {
+          answer: 'second_answer'
+        }
+      ],
+      date: new Date()
+    }))
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(forbidden(new InvalidParamError('answer')))
   })
 })
