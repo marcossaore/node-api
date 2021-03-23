@@ -4,7 +4,6 @@ import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/h
 import { InvalidParamError, MissingParamError } from '@/presentation/errors'
 import { SurveyModel } from '@/domain/models/survey'
 import MockDate from 'mockdate'
-import { Validation } from '@/presentation/protocols'
 
 const makeFakeRequest = (): HttpRequest => ({
   parameters: {
@@ -28,16 +27,6 @@ const makeFakeSurveyModel = (): SurveyModel => ({
   ],
   date: new Date()
 })
-
-const makeValidation = (): Validation => {
-  class ValidationStub implements Validation {
-    validate (params): any {
-      return null
-    }
-  }
-
-  return new ValidationStub()
-}
 
 const makeLoadSurveyById = (): LoadSurveyById => {
   class LoadSurveyByIdStub implements LoadSurveyById {
@@ -75,19 +64,16 @@ const makeSaveResultSurvey = (): SaveSurveyResult => {
 
 type SutTypes = {
   sut: SaveSurveyResultController
-  validationStub: Validation
   loadSurveyByIdStub: LoadSurveyById
   saveSurveyResultStub: SaveSurveyResult
 }
 
 const makeSut = (): SutTypes => {
-  const validationStub = makeValidation()
   const loadSurveyByIdStub = makeLoadSurveyById()
   const saveSurveyResultStub = makeSaveResultSurvey()
-  const sut = new SaveSurveyResultController(validationStub, loadSurveyByIdStub, saveSurveyResultStub)
+  const sut = new SaveSurveyResultController(loadSurveyByIdStub, saveSurveyResultStub)
   return {
     sut,
-    validationStub,
     loadSurveyByIdStub,
     saveSurveyResultStub
   }
@@ -102,31 +88,14 @@ describe('SaveSurveyResult Controller', () => {
     MockDate.reset()
   })
 
-  test('should call Validation with correct answer', async () => {
-    const { sut, validationStub } = makeSut()
-    const validate = jest.spyOn(validationStub, 'validate')
-    const fakeRequest = makeFakeRequest()
-    await sut.handle(fakeRequest)
-    const validData = {
-      answer: fakeRequest.body.answer
-    }
-    expect(validate).toHaveBeenCalledWith(validData)
-  })
-
-  test('should return 400 if Validation fails', async () => {
-    const { sut, validationStub } = makeSut()
-    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamError('any_field'))
-    const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
-  })
-
-  test('should return 500 if Validation throws', async () => {
-    const { sut, validationStub } = makeSut()
-    jest.spyOn(validationStub, 'validate').mockImplementationOnce(() => {
-      throw new Error()
+  test('should return 400 if answer is no provided', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle({
+      parameters: {
+        surveyId: 'any_survey_id'
+      }
     })
-    const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(serverError(new Error()))
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('answer')))
   })
 
   test('should call LoadSurveyById with correct surveyId', async () => {
