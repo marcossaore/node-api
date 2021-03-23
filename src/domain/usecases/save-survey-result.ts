@@ -1,8 +1,10 @@
 import { SurveyResultModel } from '../models/survey-result'
 
 export type SurveyVote = {
-  questionId: string
+  surveyId: string
+  accountId: string
   answer: string
+  date: Date
 }
 
 export interface SaveSurveyResult {
