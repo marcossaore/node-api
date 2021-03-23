@@ -1,24 +1,20 @@
 import { SaveSurveyResultRepository, SurveyVote, SurveyResultModel } from './db-save-survey-result-protocols'
 import { DbSaveSurveyResult } from './db-save-survey-result'
+import MockDate from 'mockdate'
 
 const makeFakeResult = (): SurveyVote => ({
-  questionId: 'any_question_id',
-  answer: 'answer_1'
+  surveyId: 'survey_id',
+  accountId: 'account_id',
+  answer: 'any_answer',
+  date: new Date()
 })
 
 const makeFakeResultModel = (): SurveyResultModel => ({
   id: 'any_id',
-  questionId: 'any_question_id',
-  answers: [
-    {
-      answer: 'answer_1',
-      votes: 1
-    },
-    {
-      answer: 'answer_2',
-      votes: 2
-    }
-  ]
+  surveyId: 'survey_id',
+  accountId: 'account_id',
+  answer: 'any_answer',
+  date: new Date()
 })
 
 const makeSaveSurveyResultRepository = (): SaveSurveyResultRepository => {
@@ -45,6 +41,14 @@ const makeSut = (): SutTypes => {
 }
 
 describe('DbSaveSurveyResult UseCase', () => {
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
+
   test('should call SaveSurveyResultRepository with correct values', async () => {
     const { sut, saveSurveyResultRepositoryStub } = makeSut()
     const saveSpy = jest.spyOn(saveSurveyResultRepositoryStub, 'save')
