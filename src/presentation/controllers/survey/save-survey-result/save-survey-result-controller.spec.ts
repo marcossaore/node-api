@@ -6,8 +6,9 @@ import { SurveyModel } from '@/domain/models/survey'
 import MockDate from 'mockdate'
 
 const makeFakeRequest = (): HttpRequest => ({
+  id: 'account_id',
   parameters: {
-    surveyId: 'any_survey_id'
+    surveyId: 'survey_id'
   },
   body: {
     answer: 'any_answer'
@@ -15,7 +16,7 @@ const makeFakeRequest = (): HttpRequest => ({
 })
 
 const makeFakeSurveyModel = (): SurveyModel => ({
-  id: 'any_survey_id',
+  id: 'survey_id',
   question: 'any_question',
   answers: [
     {
@@ -39,18 +40,11 @@ const makeLoadSurveyById = (): LoadSurveyById => {
 }
 
 const makeSurveyResultModel = (): SurveyResultModel => ({
-  id: 'any_survey_result_id',
-  questionId: 'any_question',
-  answers: [
-    {
-      answer: 'other_answer',
-      votes: 124
-    },
-    {
-      answer: 'any_answer',
-      votes: 45
-    }
-  ]
+  id: 'survey_result_id',
+  accountId: 'account_id',
+  answer: 'any_answer',
+  surveyId: 'survey_id',
+  date: new Date()
 })
 
 const makeSaveResultSurvey = (): SaveSurveyResult => {
@@ -102,7 +96,7 @@ describe('SaveSurveyResult Controller', () => {
     const { sut, loadSurveyByIdStub } = makeSut()
     const spyLoad = jest.spyOn(loadSurveyByIdStub, 'load')
     await sut.handle(makeFakeRequest())
-    expect(spyLoad).toHaveBeenCalledWith('any_survey_id')
+    expect(spyLoad).toHaveBeenCalledWith('survey_id')
   })
 
   test('should return 403 if LoadSurveyById returns null', async () => {
@@ -145,8 +139,10 @@ describe('SaveSurveyResult Controller', () => {
     const saveSpy = jest.spyOn(saveSurveyResultStub, 'save')
     await sut.handle(makeFakeRequest())
     const surveyResult: SurveyVote = {
-      questionId: 'any_survey_id',
-      answer: 'any_answer'
+      surveyId: 'survey_id',
+      accountId: 'account_id',
+      answer: 'any_answer',
+      date: new Date()
     }
     expect(saveSpy).toHaveBeenCalledWith(surveyResult)
   })
