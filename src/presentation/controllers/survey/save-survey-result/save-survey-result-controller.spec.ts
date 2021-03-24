@@ -6,7 +6,9 @@ import { SurveyModel } from '@/domain/models/survey'
 import MockDate from 'mockdate'
 
 const makeFakeRequest = (): HttpRequest => ({
-  id: 'account_id',
+  data: {
+    accountId: 'account_id'
+  },
   parameters: {
     surveyId: 'survey_id'
   },

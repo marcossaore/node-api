@@ -33,9 +33,11 @@ export class SaveSurveyResultController implements Controller {
         return forbidden(new InvalidParamError('answer'))
       }
 
+      const accountId = httpRequest.data.accountId
+
       const surveyResult: SurveyVote = await this.saveSurveyResult.save({
         surveyId,
-        accountId: httpRequest.id,
+        accountId,
         answer,
         date: new Date()
       })
