@@ -1,10 +1,10 @@
 import request from 'supertest'
-import { SurveyModel } from '@/domain/models/survey'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import app from '@/main/config/app'
 import env from '@/main/config/env'
 import { Collection } from 'mongodb'
 import { sign } from 'jsonwebtoken'
+import { AddSurveyModel } from '@/domain/usecases/add-survey'
 
 let surveyCollection: Collection
 let accountCollection: Collection
@@ -28,9 +28,8 @@ const updateAccount = async (id, accessToken): Promise<void> => {
   })
 }
 
-const makeFakeSurvey = (): SurveyModel => {
+const makeFakeSurvey = (): AddSurveyModel => {
   return {
-    id: 'any_id',
     question: 'any_question',
     answers: [
       {
