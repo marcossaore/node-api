@@ -1,10 +1,10 @@
-import { AddSurveyModel } from '@/domain/usecases/add-survey'
+import { AddSurveyParams } from '@/domain/usecases/survey/add-survey'
 import { MissingParamError, TypeParamError } from '@/presentation/errors'
 import { Validation } from '@/presentation/protocols'
 
 export class AddSurveySubFielsValidator implements Validation {
   validate (params: any): Error {
-    const { answers }: AddSurveyModel = params as AddSurveyModel
+    const { answers }: AddSurveyParams = params as AddSurveyParams
 
     for (const [index, value] of answers.entries()) {
       const answer = value.answer

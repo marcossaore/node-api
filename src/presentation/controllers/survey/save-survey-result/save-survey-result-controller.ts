@@ -1,4 +1,4 @@
-import { SaveSurveyResult, SurveyVote } from '@/domain/usecases/save-survey-result'
+import { SaveSurveyResult, SaveSurveyResultParams } from '@/domain/usecases/survey-result/save-survey-result'
 import { InvalidParamError, MissingParamError } from '@/presentation/errors'
 import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/http/http-helpers'
 import { Controller, HttpRequest, HttpResponse, LoadSurveyById } from './save-survey-result-controller-protocols'
@@ -35,7 +35,7 @@ export class SaveSurveyResultController implements Controller {
 
       const accountId = httpRequest.data.accountId
 
-      const surveyResult: SurveyVote = await this.saveSurveyResult.save({
+      const surveyResult: SaveSurveyResultParams = await this.saveSurveyResult.save({
         surveyId,
         accountId,
         answer,

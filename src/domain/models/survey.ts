@@ -1,5 +1,11 @@
-import { AddSurveyModel } from '../usecases/add-survey'
+export type SurveyAnswer = {
+  image?: string
+  answer: string
+}
 
-export interface SurveyModel extends AddSurveyModel {
+export type SurveyModel = {
   id: string
+  question: string
+  answers: SurveyAnswer[]
+  date: Date
 }

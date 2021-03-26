@@ -1,9 +1,9 @@
-import { AddSurveyModel } from '@/domain/usecases/add-survey'
+import { AddSurveyParams } from '@/domain/usecases/survey/add-survey'
 import { SurveyMongoRepository } from './survey-mongo-repository'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { Collection } from 'mongodb'
 
-const makeSurvey = (): AddSurveyModel => ({
+const makeSurvey = (): AddSurveyParams => ({
   question: 'any_question',
   answers: [
     {

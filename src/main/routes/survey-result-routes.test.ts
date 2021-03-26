@@ -4,7 +4,7 @@ import app from '@/main/config/app'
 import env from '@/main/config/env'
 import { Collection } from 'mongodb'
 import { sign } from 'jsonwebtoken'
-import { AddSurveyModel } from '@/domain/usecases/add-survey'
+import { AddSurveyParams } from '@/domain/usecases/survey/add-survey'
 
 let surveyCollection: Collection
 let accountCollection: Collection
@@ -28,7 +28,7 @@ const updateAccount = async (id, accessToken): Promise<void> => {
   })
 }
 
-const makeFakeSurvey = (): AddSurveyModel => {
+const makeFakeSurvey = (): AddSurveyParams => {
   return {
     question: 'important question',
     answers: [

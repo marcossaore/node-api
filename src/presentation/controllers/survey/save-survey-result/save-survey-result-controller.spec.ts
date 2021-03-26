@@ -1,4 +1,4 @@
-import { HttpRequest, LoadSurveyById, SaveSurveyResult, SurveyVote, SurveyResultModel } from './save-survey-result-controller-protocols'
+import { HttpRequest, LoadSurveyById, SaveSurveyResult, SaveSurveyResultParams, SurveyResultModel } from './save-survey-result-controller-protocols'
 import { SaveSurveyResultController } from './save-survey-result-controller'
 import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/http/http-helpers'
 import { InvalidParamError, MissingParamError } from '@/presentation/errors'
@@ -51,7 +51,7 @@ const makeSurveyResultModel = (): SurveyResultModel => ({
 
 const makeSaveResultSurvey = (): SaveSurveyResult => {
   class SaveSurveyResultStub implements SaveSurveyResult {
-    async save (surveyVote: SurveyVote): Promise<SurveyResultModel> {
+    async save (saveSurveyResultParams: SaveSurveyResultParams): Promise<SurveyResultModel> {
       return makeSurveyResultModel()
     }
   }
@@ -140,7 +140,7 @@ describe('SaveSurveyResult Controller', () => {
     const { sut, saveSurveyResultStub } = makeSut()
     const saveSpy = jest.spyOn(saveSurveyResultStub, 'save')
     await sut.handle(makeFakeRequest())
-    const surveyResult: SurveyVote = {
+    const surveyResult: SaveSurveyResultParams = {
       surveyId: 'survey_id',
       accountId: 'account_id',
       answer: 'any_answer',

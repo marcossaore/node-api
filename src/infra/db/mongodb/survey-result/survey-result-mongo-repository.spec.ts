@@ -1,4 +1,4 @@
-import { SurveyVote } from '@/domain/usecases/save-survey-result'
+import { SaveSurveyResultParams } from '@/domain/usecases/survey-result/save-survey-result'
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { Collection } from 'mongodb'
@@ -32,7 +32,7 @@ const createSurvey = async (): Promise<string> => {
   return result.ops[0]._id
 }
 
-const makeFakeVote = async (): Promise<SurveyVote> => {
+const makeFakeVote = async (): Promise<SaveSurveyResultParams> => {
   const accountId = await createAccount()
   const surveyId = await createSurvey()
   return {
