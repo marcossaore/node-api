@@ -1,14 +1,6 @@
 import { Validation } from '@/presentation/protocols'
+import { mockValidation } from '../test'
 import { ValidationComposite } from './validation-composite'
-
-const makeValidation = (): Validation => {
-  class ValidationStub implements Validation {
-    validate (params: any): Error {
-      return null
-    }
-  }
-  return new ValidationStub()
-}
 
 const makeSut = (validationsStub: Validation[]): Validation => {
   return new ValidationComposite(validationsStub)
@@ -16,7 +8,7 @@ const makeSut = (validationsStub: Validation[]): Validation => {
 
 describe('Validation Composite', () => {
   test('should call Validation Inject with correct values', () => {
-    const validationsStub = [makeValidation()]
+    const validationsStub = [mockValidation()]
     const sut = makeSut(validationsStub)
 
     const validateSpy = jest.spyOn(validationsStub[0], 'validate')
@@ -32,7 +24,7 @@ describe('Validation Composite', () => {
   })
 
   test('should return an error if an Validation returns an error', () => {
-    const validations = [makeValidation(), makeValidation()]
+    const validations = [mockValidation(), mockValidation()]
     jest.spyOn(validations[0], 'validate').mockImplementationOnce(() => {
       return new Error('Error in first validation')
     })

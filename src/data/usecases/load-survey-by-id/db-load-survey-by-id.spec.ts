@@ -1,30 +1,9 @@
 
+import { mockSurveyModel, throwError } from '@/domain/test'
 import { DbLoadSurveyById } from './db-load-survey-by-id'
-import { LoadSurveyByIdRepository, SurveyModel } from './db-load-survey-by-id-protocols'
+import { LoadSurveyByIdRepository } from './db-load-survey-by-id-protocols'
 import MockDate from 'mockdate'
-
-const makeFakeSurveyModel = (): SurveyModel => ({
-  id: 'any_survey_id',
-  question: 'any_question',
-  answers: [
-    {
-      answer: 'other_answer'
-    },
-    {
-      answer: 'any_answer'
-    }
-  ],
-  date: new Date()
-})
-
-const makeLoadSurveyByIdRepository = (): LoadSurveyByIdRepository => {
-  class LoadSurveyByIdRepositoryStub implements LoadSurveyByIdRepository {
-    async loadById (id: string): Promise<SurveyModel> {
-      return makeFakeSurveyModel()
-    }
-  }
-  return new LoadSurveyByIdRepositoryStub()
-}
+import { mockLoadSurveyByIdRepository } from '@/data/test'
 
 type SutTypes = {
   sut: DbLoadSurveyById
@@ -32,7 +11,7 @@ type SutTypes = {
 }
 
 const makeSut = (): SutTypes => {
-  const loadSurveyByIdRepositoryStub = makeLoadSurveyByIdRepository()
+  const loadSurveyByIdRepositoryStub = mockLoadSurveyByIdRepository()
   const sut = new DbLoadSurveyById(loadSurveyByIdRepositoryStub)
   return {
     sut,
@@ -67,9 +46,7 @@ describe('DbLoadSurveyById UseCase', () => {
 
   test('should throw if LoadSurveyByIdRepository throws', async () => {
     const { sut, loadSurveyByIdRepositoryStub } = makeSut()
-    jest.spyOn(loadSurveyByIdRepositoryStub, 'loadById').mockImplementationOnce(() => {
-      throw new Error()
-    })
+    jest.spyOn(loadSurveyByIdRepositoryStub, 'loadById').mockImplementationOnce(throwError)
     const promise = sut.load(id)
     await expect(promise).rejects.toThrow()
   })
@@ -77,6 +54,6 @@ describe('DbLoadSurveyById UseCase', () => {
   test('should return survey result on succeds', async () => {
     const { sut } = makeSut()
     const surveyResult = await sut.load(id)
-    expect(surveyResult).toEqual(makeFakeSurveyModel())
+    expect(surveyResult).toEqual(mockSurveyModel())
   })
 })

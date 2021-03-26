@@ -1,10 +1,10 @@
 import request from 'supertest'
+import { mockAddSurveyParams } from '@/domain/test'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import app from '@/main/config/app'
 import env from '@/main/config/env'
 import { Collection } from 'mongodb'
 import { sign } from 'jsonwebtoken'
-import { AddSurveyParams } from '@/domain/usecases/survey/add-survey'
 
 let surveyCollection: Collection
 let accountCollection: Collection
@@ -28,20 +28,8 @@ const updateAccount = async (id, accessToken): Promise<void> => {
   })
 }
 
-const makeFakeSurvey = (): AddSurveyParams => {
-  return {
-    question: 'any_question',
-    answers: [
-      {
-        answer: 'any_answer'
-      }
-    ],
-    date: new Date()
-  }
-}
-
 const createSurveys = async (): Promise<void> => {
-  await surveyCollection.insertMany([makeFakeSurvey(), makeFakeSurvey()], { ordered: true })
+  await surveyCollection.insertMany([mockAddSurveyParams(), mockAddSurveyParams()], { ordered: true })
 }
 
 const extractAccessTokenFromAccount = async (): Promise<string> => {

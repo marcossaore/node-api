@@ -2,6 +2,7 @@ import { SaveSurveyResultParams } from '@/domain/usecases/survey-result/save-sur
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { Collection } from 'mongodb'
+import { mockAddAccountParams, mockAddSurveyParams } from '@/domain/test'
 
 let accountCollection: Collection
 let surveyCollection: Collection
@@ -10,25 +11,12 @@ let surveyResultCollection: Collection
 const sut = new SurveyResultMongoRepository()
 
 const createAccount = async (): Promise<string> => {
-  const result = await accountCollection.insertOne({
-    name: 'any_name',
-    email: 'any_emai@mail.com',
-    password: 'any_password'
-  })
+  const result = await accountCollection.insertOne(mockAddAccountParams())
   return result.ops[0]._id
 }
 
 const createSurvey = async (): Promise<string> => {
-  const result = await surveyCollection.insertOne({
-    question: 'any_question',
-    answers: [
-      {
-        image: 'any_image',
-        answer: 'any_answer'
-      }
-    ],
-    date: new Date()
-  })
+  const result = await surveyCollection.insertOne(mockAddSurveyParams())
   return result.ops[0]._id
 }
 
